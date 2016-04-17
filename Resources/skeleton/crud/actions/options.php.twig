@@ -4,6 +4,9 @@
 {% endblock phpdoc_method_header %}
      *
 {% block phpdoc_method_annotations %}
+{% if options['options']['security'] is defined %}
+     * @Security("has_role('{% for role in options['options']['security'] %}{{ role }}',{% endfor %})")
+{% endif %}
      * @ApiDoc(
      *   section = "{{ entity }}s",
      *   description = "Display a {{ entity }} resource options.",
@@ -15,7 +18,7 @@
 {% endblock phpdoc_method_annotations %}
      */
 {% block method_definition %}
-    public function options{{ entity }}Action()
+    public function options{{ entity }}sAction()
 {% endblock method_definition %}
     {
 {% block method_body %}

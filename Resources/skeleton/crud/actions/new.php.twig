@@ -4,6 +4,9 @@
 {% endblock phpdoc_method_header %}
      *
 {% block phpdoc_method_annotations %}
+{% if options['post']['security'] is defined %}
+     * @Security("has_role('{% for role in options['post']['security'] %}{{ role }}',{% endfor %})")
+{% endif %}
      * @ApiDoc(
      *   section = "{{ entity }}s",
      *   description = "Create new {{ entity_singularized }}.",

@@ -13,6 +13,9 @@ class GenCrudGenerator extends DoctrineCrudGenerator
 {
     protected $services;
 
+    /**
+     * {@inheritdoc}
+     */
     public function generate(BundleInterface $bundle, $entity, ClassMetadataInfo $metadata, $format, $routePrefix, $needWriteActions, $forceOverwrite)
     {
         $this->routePrefix = $routePrefix;
@@ -20,7 +23,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         $this->actions = $needWriteActions ? array('index', 'show', 'new', 'edit', 'delete', 'options') : array('index', 'show', 'options');
 
         if (count($metadata->identifier) != 1) {
-            throw new \RuntimeException('The CRUD generator does not support entity classes with multiple or no primary keys.');
+            throw new \RuntimeException('The REST generator does not support entity classes with multiple or no primary keys.');
         }
 
         $this->entity = $entity;
@@ -48,20 +51,6 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             $this->filesystem->mkdir($dir, 0777);
         }
 
-        $this->generateIndexView($dir);
-
-        if (in_array('show', $this->actions)) {
-            $this->generateShowView($dir);
-        }
-
-        if (in_array('new', $this->actions)) {
-            $this->generateNewView($dir);
-        }
-
-        if (in_array('edit', $this->actions)) {
-            $this->generateEditView($dir);
-        }
-
         $this->generateTestClass();
         $this->generateConfiguration();
 
@@ -77,6 +66,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         $parts = explode('\\', $this->entity);
         $entityClass = array_pop($parts);
         $entityNamespace = implode('\\', $parts);
+        $options = $this->data[0]['Controller'];
 
         $target = sprintf(
             '%s/Controller/%s/%sController.php',
@@ -97,12 +87,15 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             null,
             $entityClass,
             $entityNamespace,
-            key($handler)
+            key($handler),
+            $options
         );
     }
 
     /**
-     * Protected
+     * @param $service
+     * @param $arguments
+     * @param $forceOverwrite
      */
     protected function generateHandlers($service, $arguments, $forceOverwrite)
     {
@@ -135,7 +128,9 @@ class GenCrudGenerator extends DoctrineCrudGenerator
     }
 
     /**
-     * Protected
+     * @param $service
+     * @param $arguments
+     * @param $forceOverwrite
      */
     protected function generateRepository($service, $arguments, $forceOverwrite)
     {
@@ -182,10 +177,12 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         }
 
         $this->addPatternToServices($this->data[0]['Repository']);
-
-
     }
 
+    /**
+     * @param $arguments
+     * @param $forceOverwrite
+     */
     protected function generateEntityInterface($arguments, $forceOverwrite)
     {
         $dir = $this->bundle->getPath() . '/' . $arguments['dir'];
@@ -214,7 +211,15 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         );
     }
 
-    protected function processRenderFile($file, $target, $classname, $entityClass, $serviceNamespace, $service = null)
+    /**
+     * @param $file
+     * @param $target
+     * @param $classname
+     * @param $entityClass
+     * @param $serviceNamespace
+     * @param null $service
+     */
+    protected function processRenderFile($file, $target, $classname, $entityClass, $serviceNamespace, $service = null, $options = null)
     {
         $this->renderFile($file, $target, array(
             'actions' => $this->actions,
@@ -231,10 +236,14 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             'format' => $this->format,
             'class_name' => $classname,
             'service' => $service,
-            'fields' => $this->metadata->fieldMappings
+            'fields' => $this->metadata->fieldMappings,
+            'options' => $options
         ));
     }
 
+    /**
+     * @param $definitions
+     */
     protected function addPatternToServices($definitions)
     {
         $file = sprintf('%s/config/%s', $this->rootDir, 'services.yml');
@@ -278,6 +287,9 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         file_put_contents($file, $yaml);
     }
 
+    /**
+     * @param $definition
+     */
     protected function addToServices($definition)
     {
         $file = sprintf('%s/config/%s', $this->rootDir, 'services.yml');
@@ -308,6 +320,9 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         file_put_contents($file, $yaml);
     }
 
+    /**
+     * @return array
+     */
     protected function genParamsData()
     {
         $data = array();

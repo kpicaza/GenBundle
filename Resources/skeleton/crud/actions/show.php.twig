@@ -4,6 +4,9 @@
 {% endblock phpdoc_method_header %}
      *
 {% block phpdoc_method_annotations %}
+{% if options['get']['security'] is defined %}
+     * @Security("has_role('{% for role in options['get']['security'] %}{{ role }}',{% endfor %})")
+{% endif %}
      * @ApiDoc(
      *   section = "{{ entity }}s",
      *   description = "Get {{ entity_singularized }} by ID.",

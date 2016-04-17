@@ -7,6 +7,7 @@ namespace {{ namespace }}\Controller{{ entity_namespace ? '\\' ~ entity_namespac
 use Symfony\Component\HttpFoundation\Request;
 {%- endif %}
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use FOS\RestBundle\Controller\FOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 {% if 'annotation' == format -%}
