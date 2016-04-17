@@ -117,3 +117,246 @@
         resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
         prefix:   /api/doc
 
+**2.** Crando el primer recurso
+
+**2.1.** Para generar el REST necesitaos generar primero las entidades de Doctrine, que
+utilizaremos como recursos. Como ejemplo crearemos la entidad "Post" en yml.
+
+    // src/AppBundle/config/docritne/Post.orm.yml
+    AppBundle\Entity\Post:
+        type: entity
+        table: gentest_post
+        repositoryClass: AppBundle\Repository\PostGateway
+        id:
+            id:
+                type: integer
+                id: true
+                generator:
+                    strategy: AUTO
+        fields:
+            title:
+                length: '140'
+            description:
+                type: text
+            created:
+                type: datetime
+            updated:
+                type: datetime
+                nullable: true
+        lifecycleCallbacks:
+            prePersist: [ setCreatedAtValue ]
+            preUpdate: [ setUpdatedAtValue ]
+
+**2.2.** Genelamos el modelo con el siguiente comando
+
+    php bin/console doctrine:generate:entities AppBundle:Post
+
+Esto genera un modelo tonto con getters y setters para todos los campos.
+
+Generamos también la bbdd y su esquema.
+
+    php bin/console doctrine:database:create
+    php bin/console doctrine:schema:update --force
+
+**3.** Instrucciones del generador
+
+**3.1.** Crearemos el archivo `intructions.yml` en el directorio `app/config/gen/<<Entity>>`
+
+    // app/config/gen/intructions.yml
+    Controller:
+        index:
+            security:
+                - ROLE_USER
+        get:
+            security:
+                - ROLE_USER
+        post:
+            security:
+                - ROLE_ADMIN
+        put:
+            security:
+                - ROLE_ADMIN
+        delete:
+            security:
+                - ROLE_ADMIN
+        options:
+
+    Handlers:
+        app.api_post_handler:
+            class: AppBundle\Handler\Post\ApiPostHandler
+            arguments:
+                - [ "@app.post_repository", AppBundle\Model\Post\PostRepository ]
+                - [ "@form.factory", Symfony\Component\Form\Form ]
+            dir: "Handler/Post"
+            classname: "ApiPostHandler"
+            type: Handler
+
+    Repository:
+        app.post_factory:
+            class: AppBundle\Model\Post\PostFactory
+            dir: "Model/Post"
+            classname: "PostFactory"
+            type: Factory
+
+        app.post_gateway:
+            class: AppBundle\Repository\PostGateway
+            factory: [ "@doctrine", getRepository] #  "@doctrine" or "@doctrine_mongodb"
+            arguments: [ "AppBundle:Post" ]
+            dir: "Model/Post"
+            classname: "PostGateway"
+            type: Gateway
+
+        app.post_repository:
+            class: AppBundle\Model\Post\PostRepository
+            arguments: [ "@app.post_gateway", "@app.post_factory" ]
+            dir: "Model/Post"
+            classname: "PostRepository"
+            type: Repository
+
+**3.1.1.** Controller:
+
+Podemos generar un array con los diferentes metodos de nuestro controlador para
+aplicarles la capa de seguridad por rol de symfony, podemos asignar uno, varios o ningún
+rol a cada método.
+
+Ejemplo de definición de seguridad en controlador:
+
+    // app/config/gen/intructions.yml
+    ...
+    Controller:
+        index:
+            security:
+                - ROLE_USER
+        get:
+            security:
+                - ROLE_USER
+        post:
+            security:
+                - ROLE_ADMIN
+        put:
+            security:
+                - ROLE_ADMIN
+        delete:
+            security:
+                - ROLE_ADMIN
+        options:
+
+
+**3.1.2.** Handler:
+
+Es necesario definir el handler para nuestros formularios, la primera clave del array,
+será el nombre del servicio, en el ejemplo `app.post_factory`(Este comportamiento se
+repite en typo Repository).
+
+Esta clave requiere un array los siguientes campos:
+
+* **class:** Namespace de la clase "Handler".
+* **arguments:** Argumentos necesario para el constructor de la clase "Handler".
+* **dir:** Directorio en que se alojará la clase "Handler".
+* **classname:** El nombre de la clase "Handler"
+* **type:** El tipo de servicio que vamos a crear, en este caso siempre será "Handler".
+
+Ejemplo de definición de Handler:
+
+    // app/config/gen/intructions.yml
+    ...
+    Handlers:
+        app.api_post_handler:
+            class: AppBundle\Handler\Post\ApiPostHandler
+            arguments:
+                - [ "@app.post_repository", AppBundle\Model\Post\PostRepository ]
+                - [ "@form.factory", Symfony\Component\Form\Form ]
+            dir: "Handler/Post"
+            classname: "ApiPostHandler"
+            type: Handler
+
+**3.1.3.** Repository:
+
+Por último necesitaremos definir las clases de nuestro repositorio
+
+    // app/config/gen/intructions.yml
+    ...
+    Repository:
+        app.post_factory:
+            class: AppBundle\Model\Post\PostFactory
+            dir: "Model/Post"
+            classname: "PostFactory"
+            type: Factory
+
+        app.post_gateway:
+            class: AppBundle\Repository\PostGateway
+            factory: [ "@doctrine", getRepository] #  "@doctrine" or "@doctrine_mongodb"
+            arguments: [ "AppBundle:Post" ]
+            dir: "Model/Post"
+            classname: "PostGateway"
+            type: Gateway
+
+        app.post_repository:
+            class: AppBundle\Model\Post\PostRepository
+            arguments: [ "@app.post_gateway", "@app.post_factory" ]
+            dir: "Model/Post"
+            classname: "PostRepository"
+            type: Repository
+
+**4.** Ejecutando el comendo
+
+**4.1.** Podemos ver todas las opciones del generador con el siguiente commando:
+
+    php bin/console gen:generate:rest --help
+
+**4.2.** Pasamos a generar nuestra primera entidad.
+
+    php bin/console gen:generate:rest \
+    --entity AppBundle:Post \
+    --with-write \
+    --format annotation \
+    --overwrite \
+    -vvv \
+    --no-interaction
+
+**4.2.1.** Veamos el código generado:
+
+    AppBundle/
+    |_ Controller/
+    |   |_ PostController.php
+    |_ Entity/
+    |   |_ Post.php
+    |_ Form/
+    |   |_ PostType.php
+    |_ Handler/
+    |   |_ Post/
+    |       |_ ApiPostHandler.php
+    |_ Model/
+    |   |_ Post/
+    |       |_ PostInterface.php
+    |       |_ PostGatewayInterface.php
+    |       |_ PostFactoryInterface.php
+    |       |_ PostFactory.php
+    |       |_ PosrRepository.php
+    |_ Repository/
+    |   |_ PostGateway.php
+
+En este momento hemos generado cantidad de código, todo el modelo, el handler y el
+controlador de nuestra entidad, para que el patrón repositorio funcione
+correctamente necesitamo hacer que nuestra entidad implemente el nuevo interface
+que se ha generado.
+
+    // src/AppBundle/Entity/Post.php
+    <?php
+
+    namespace AppBundle\Entity;
+
+    use AppBundle\Model\Post\PostInterface;
+    use Symfony\Component\Validator\Constraints as Assert;
+    use Doctrine\ORM\Mapping as ORM;
+
+    /**
+     * Post
+     */
+    class Post implements PostInterface
+
+*Añadimos el namespace `Constraints` como asser para añadir validacion mediante
+anotaciones. Ver documentación oficicial sobre validaciones.
+
+Ya tenemos nuestro rest creado, podemo ver la documentación y probarlos en la ruta
+`/api/doc`.
