@@ -1,0 +1,36 @@
+
+    /**
+{% block phpdoc_method_header %}
+     * Creates a new {{ entity }} entity.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+     * @ApiDoc(
+     *   section = "{{ entity }}s",
+     *   description = "Create new {{ entity_singularized }}.",
+     *   input = "AppBundle\Entity\{{ entity }}",
+     *   output = "AppBundle\Entity\{{ entity }}",
+     *   statusCodes = {
+     *     201 = "New {{ entity_singularized }} was created.",
+     *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
+     *   }
+     * )
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function post{{ entity }}Action(Request $request)
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        ${{ entity_singularized }} = $this->get('app.api_{{ entity_singularized }}_handler')->post(
+            $request->request->all()
+        );
+
+{% endblock method_body %}
+
+{% block method_return %}
+        $view = $this->view(${{ entity_singularized }});
+
+        return $this->handleView($view);
+{% endblock method_return %}
+    }

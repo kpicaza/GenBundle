@@ -1,0 +1,110 @@
+<?php
+
+namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
+
+{% block use_statements %}
+use AppBundle\Model\{{ entity }}\{{ entity }}GatewayInterface;
+use AppBundle\Model\{{ entity }}\{{ entity }}FactoryInterface;
+{% endblock use_statements %}
+
+/**
+{% block phpdoc_class_header %}
+ * Factory implements {{ entity }}FactoryInterface.
+{% endblock phpdoc_class_header %}
+ */
+{% block class_definition %}
+class {{ class_name }}
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @var \AppBundle\Model\{{ entity }}\{{ entity }}GatewayInterface
+     */
+    private $gateway;
+    /**
+     * @var \AppBundle\Model\{{ entity }}\{{ entity }}FactoryInterface
+     */
+    private $factory;
+
+    /**
+     * @param \AppBundle\Model\{{ entity }}\{{ entity }}GatewayInterface $gateway
+     * @param \AppBundle\Model\{{ entity }}\{{ entity }}FactoryInterface $factory
+     */
+    public function __construct({{ entity }}GatewayInterface $gateway, {{ entity }}FactoryInterface $factory)
+    {
+        $this->gateway = $gateway;
+        $this->factory = $factory;
+    }
+    /**
+    * @param {{ entity }}Interface|int $id
+    *
+    * @return {{ entity }}Interface
+    */
+    public function find($id)
+    {
+        $raw{{ entity }} = $this->gateway->find($id);
+
+        return $this->factory->makeOne($raw{{ entity }});
+    }
+    /**
+    * @param array $criteria
+    * @param array $orderBy
+    *
+    * @return {{ entity }}Interface
+    */
+    public function findOneBy(array $criteria)
+    {
+        ${{ entity_singularized }} = $this->gateway->findOneBy($criteria);
+
+        return null === ${{ entity_singularized }} ? null : $this->factory->makeOne(${{ entity_singularized }});
+    }
+    /**
+    *
+    * @param array $criteria
+    * @param array $sort
+    * @param integer $limit
+    * @param integer $skip
+    * @return array
+    */
+    public function findBy(array $criteria = array(), $sort = null, $limit = null, $skip = null)
+    {
+        return $this->gateway->findBy($criteria, $sort, $limit, $skip);
+    }
+    /**
+    * @param null $subject
+    * @param null $description
+    * @return {{ entity }}Interface
+    */
+    public function findNew($subject = null, $description = null)
+    {
+        return $this->gateway->findNew($subject, $description);
+    }
+    /**
+     * @param {{ entity }} $raw{{ entity }}
+     *
+     * @return type
+     */
+    public function insert({{ entity }}Interface $raw{{ entity }})
+    {
+        ${{ entity_singularized }} = $this->gateway->insert($raw{{ entity }});
+
+        return $this->factory->makeOne(${{ entity_singularized }});
+    }
+    /**
+    * @param {{ entity }}Interface $raw{{ entity }}
+    *
+    * @return bool
+    */
+    public function update()
+    {
+        return $this->gateway->update();
+    }
+    /**
+    * @param $id
+    */
+    public function remove({{ entity }}Interface ${{ entity_singularized }})
+    {
+        $this->gateway->remove(${{ entity_singularized }});
+    }
+{% endblock class_body %}
+}

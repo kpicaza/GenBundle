@@ -1,0 +1,30 @@
+<?php
+namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
+{% block use_statements %}
+{% endblock use_statements %}
+/**
+{% block phpdoc_class_header %}
+ * {{ entity }}Interface.
+{% endblock phpdoc_class_header %}
+ */
+{% block class_definition %}
+interface {{ class_name }}
+{% endblock class_definition %}
+{
+{% block class_body %}
+{% for field, params in fields %}
+    /**
+     * Get {{ field }}.
+     */
+    public function get{{ field | capitalize }}();
+
+{% if 'id' != field %}
+    /**
+     * Set {{ field }}.
+     */
+    public function set{{ field |capitalize }}(${{ field }});
+{% endif %}
+{% endfor %}
+
+{% endblock class_body %}
+}

@@ -1,0 +1,32 @@
+    /**
+{% block phpdoc_method_header %}
+     * Lists all {{ entity }} entities.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+     * @ApiDoc(
+     *   section = "{{ entity }}s",
+     *   description = "Get {{ entity_pluralized }} list.",
+     *   statusCodes = {
+     *     200 = "Show {{ entity_singularized }} info.",
+     *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
+     *     403 = "Authorization failure, user does not have permission to access this area.",
+     *   }
+     * )
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function get{{ entity }}sAction()
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        ${{ entity_pluralized }} = $this->get({{ "'" ~ service ~ "'"}})->getBy(array());
+
+{% endblock method_body %}
+
+{% block method_return %}
+        $view = $this->view(${{ entity_pluralized }});
+
+        return $this->handleView($view);
+{% endblock method_return %}
+    }

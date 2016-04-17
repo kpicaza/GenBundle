@@ -1,0 +1,36 @@
+
+    /**
+{% block phpdoc_method_header %}
+     * Finds and displays a {{ entity }} entity.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+     * @ApiDoc(
+     *   section = "{{ entity }}s",
+     *   description = "Get {{ entity_singularized }} by ID.",
+     *   statusCodes = {
+     *     200 = "Show {{ entity_singularized }} info.",
+     *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
+     *     403 = "Authorization failure, user does not have permission to access this area.",
+     *   }
+     * )
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function get{{ entity }}Action($id)
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        ${{ entity_singularized }} = $this->get('app.api_{{ entity_singularized }}_handler')->get($id);
+
+        if (null === ${{ entity_singularized }}) {
+            throw new NotFoundHttpException('{{ entity }} not found');
+        }
+{% endblock method_body %}
+
+{% block method_return %}
+        $view = $this->view(${{ entity_singularized }});
+
+        return $this->handleView($view);
+{% endblock method_return %}
+    }

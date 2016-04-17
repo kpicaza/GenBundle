@@ -1,0 +1,51 @@
+<?php
+
+namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
+
+{% block use_statements %}
+{% endblock use_statements %}
+
+/**
+{% block phpdoc_class_header %}
+ * {{ class_name }} Interface.
+{% endblock phpdoc_class_header %}
+ */
+{% block class_definition %}
+interface {{ class_name }}Interface
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @param string|integer|{{ entity }} $id
+     */
+    public function find($id);
+    /**
+     * @param array $criteria
+     * @param array $sort
+     * @param integer $limit
+     * @param integer $skip
+     */
+    public function findBy(array $criteria, array $sort = null, $limit = null, $skip = null);
+    /**
+     * @param array $criteria
+     */
+    public function findOneBy(array $criteria, array $orderBy = null);
+    /**
+     * @return {{ entity }}
+     */
+    public function findNew($subject = null, $description = null);
+    /**
+     * @param {{ entity }}Interface ${{ entity_singularized }}
+     * @return {{ entity }}Interface
+     */
+    public function insert({{ entity }}Interface ${{ entity_singularized }});
+    /**
+    * Update {{ entity }}.
+    */
+    public function update();
+    /**
+    * @param $id
+    */
+    public function remove({{ entity }}Interface ${{ entity_singularized }});
+{% endblock class_body %}
+}

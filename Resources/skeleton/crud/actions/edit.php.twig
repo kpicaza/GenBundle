@@ -1,0 +1,37 @@
+
+    /**
+{% block phpdoc_method_header %}
+     * Update an existing {{ entity }} entity.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+     * @ApiDoc(
+     *   description = "Update {{ entity_singularized }} by ID.",
+     *   section = "{{ entity }}s",
+     *   input = "AppBundle\Entity\{{ entity }}",
+     *   output = "AppBundle\Entity\{{ entity }}",
+     *   statusCodes = {
+     *     200 = "{{ entity_singularized | capitalize }} successfully updated.",
+     *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
+     *     403 = "Authorization failure, user does not have permission to access this area.",
+     *   }
+     * )
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function put{{ entity }}Action(Request $request, $id)
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        ${{ entity_singularized }} = $this->get('app.api_{{ entity_singularized }}_handler')->put(
+            $id,
+            $request->request->all()
+        );
+{% endblock method_body %}
+
+{% block method_return %}
+        $view = $this->view(${{ entity_singularized }});
+
+        return $this->handleView($view);
+{% endblock method_return %}
+    }

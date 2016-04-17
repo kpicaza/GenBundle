@@ -1,0 +1,36 @@
+<?php
+
+namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
+
+{% block use_statements %}
+use AppBundle\Model\{{ entity }}\{{ entity }}Interface;
+{% endblock use_statements %}
+
+/**
+{% block phpdoc_class_header %}
+ * {{ entity }}FactoryInterface.
+{% endblock phpdoc_class_header %}
+ */
+{% block class_definition %}
+interface {{ class_name }}Interface
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @param array $raw{{ entity }}s
+     * @param array $params
+     * @return array|{{ entity }}
+     */
+    public function makeAll(array $raw{{ entity }}s, array $params = array());
+    /**
+    * @param {{ entity }}Interface $raw{{ entity }}
+    * @return {{ entity }}Interface
+    */
+    public function makeOne($raw{{ entity }}, array $params = array());
+    /**
+    * @param {{ entity }}Interface $rawUser
+    * @return {{ entity }}Interface
+    */
+    public function make($raw{{ entity }}, array $params = array());
+{% endblock class_body %}
+}

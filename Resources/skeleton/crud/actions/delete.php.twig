@@ -1,0 +1,37 @@
+
+    /**
+{% block phpdoc_method_header %}
+     * Deletes a {{ entity }} entity.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+     * @ApiDoc(
+     *   section = "{{ entity }}s",
+     *   description = "Delete {{ entity_singularized }} by id.",
+     *   statusCodes = {
+     *     204 = "{{ entity }} was successfully deleted.",
+     *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
+     *   }
+     * )
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function delete{{ entity }}Action(Request $request, $id)
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        $deleted = $this->get('app.api_{{ entity_singularized }}_handler')->delete($id);
+
+{% endblock method_body %}
+
+{% block method_return %}
+        if (false === $deleted) {
+            $view = $this->view(array(), 404);
+        }
+        else {
+            $view = $this->view(array(), 204);
+        }
+
+        return $this->handleView($view);
+{% endblock method_return %}
+    }

@@ -1,0 +1,79 @@
+<?php
+
+namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
+
+{% block use_statements %}
+use AppBundle\Model\{{ entity }}\{{ entity }}GatewayInterface;
+use AppBundle\Model\{{ entity }}\{{ entity }}Interface;
+use Doctrine\ORM\EntityRepository;
+{% endblock use_statements %}
+
+/**
+{% block phpdoc_class_header %}
+ * {{ class_name }} extends EntityRepository implements {{ entity }}GatewayInterface.
+{% endblock phpdoc_class_header %}
+ */
+{% block class_definition %}
+class {{ class_name }} extends EntityRepository implements {{ entity }}GatewayInterface
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @param string|integer|{{ entity }} $id
+     */
+    public function find($id)
+    {
+        return parent::find($id);
+    }
+    /**
+     * @param array $criteria
+     * @param array $sort
+     * @param integer $limit
+     * @param integer $skip
+     */
+    public function findBy(array $criteria, array $sort = null, $limit = null, $skip = null)
+    {
+        return parent::findBy($criteria, $sort, $limit, $skip);
+    }
+    /**
+     * @param array $criteria
+     */
+    public function findOneBy(array $criteria, array $orderBy = null)
+    {
+        return parent::findOneBy($criteria);
+    }
+    /**
+     * @return {{ entity }}
+     */
+    public function findNew($subject = null, $description = null)
+    {
+        return new {{ entity }}($subject, $description);
+    }
+    /**
+     * @param {{ entity }}Interface ${{ entity_singularized }}
+     * @return {{ entity }}Interface
+     */
+    public function insert({{ entity }}Interface $grade)
+    {
+        $this->_em->persist($grade);
+        $this->_em->flush();
+
+        return $grade;
+    }
+    /**
+    * Update {{ entity }}.
+    */
+    public function update()
+    {
+        $this->_em->flush();
+    }
+    /**
+    * @param $id
+    */
+    public function remove({{ entity }}Interface ${{ entity_singularized }})
+    {
+        $this->_em->remove(${{ entity_singularized }});
+        $this->_em->flush();
+    }
+{% endblock class_body %}
+}

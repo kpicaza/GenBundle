@@ -1,0 +1,36 @@
+{
+    "name": "kpicaza/gen-bundle",
+    "description": "This bundle generates custom code.",
+    "keywords": [],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Koldo Picaza",
+            "email": "kpicaza.sound@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle": "~2.7|~3.0",
+        "symfony/console": "~2.7|~3.0",
+        "symfony/process": "~2.7|~3.0",
+        "symfony/yaml": "~2.7|~3.0",
+        "sensio/generator-bundle": "^3.0",
+        "nelmio/cors-bundle": "^1.4",
+        "friendsofsymfony/rest-bundle": "^1.7",
+        "nelmio/api-doc-bundle": "^2.12",
+        "jms/serializer-bundle": "^1.1"
+    },
+    "require-dev": {
+        "symfony/doctrine-bridge": "~2.7|~3.0",
+        "doctrine/orm": "~2.4",
+        "twig/twig": "~1.18"
+    },
+    "autoload": {
+        "psr-4": { "Kpicaza\\Bundle\\GenBundle\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev"
+}

@@ -1,0 +1,57 @@
+<?php
+
+namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
+
+{% block use_statements %}
+use AppBundle\Model\{{ entity }}\{{ entity }}Interface;
+use AppBundle\Model\{{ entity }}\{{ entity }}FactoryInterface;
+{% endblock use_statements %}
+
+/**
+{% block phpdoc_class_header %}
+ * Factory implements {{ entity }}FactoryInterface.
+{% endblock phpdoc_class_header %}
+ */
+{% block class_definition %}
+class {{ class_name }} implements {{ entity }}FactoryInterface
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @param array $raw{{ entity }}s
+     * @param array $params
+     * @return array|{{ entity }}
+     */
+    public function makeAll(array $raw{{ entity }}s, array $params = array())
+    {
+        ${{ entity_pluralized }} = array();
+
+        foreach ($raw{{ entity }}s as $raw{{ entity }}) {
+            ${{ entity_pluralized }}[] = $this->make($raw{{ entity }}, $params);
+        }
+
+        return ${{ entity_pluralized }};
+    }
+    /**
+    * @param {{ entity }}Interface $raw{{ entity }}
+    * @return {{ entity }}Interface
+    */
+    public function makeOne($raw{{ entity }}, array $params = array())
+    {
+        return $this->make($raw{{ entity }}, $params);
+    }
+    /**
+    * @param {{ entity }}Interface $rawUser
+    * @return {{ entity }}Interface
+    */
+    public function make($raw{{ entity }}, array $params = array())
+    {
+        if (!$raw{{ entity }} instanceof {{ entity }}Interface) {
+            return null;
+        }
+
+        // You can format object, in this case we left it to return as raw object, feedback is welcome!
+        return $raw{{ entity }};
+    }
+{% endblock class_body %}
+}

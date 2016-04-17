@@ -1,0 +1,118 @@
+<?php
+
+namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
+
+{% block use_statements %}
+use AppBundle\Model\{{ entity }}\{{ entity }}Repository;
+use Symfony\Component\Form\FormFactoryInterface;
+use {{ namespace }}\Entity\{{ entity }};
+{% if 'new' in actions or 'edit' in actions %}
+use {{ namespace }}\Form\{{ entity }}Type;
+{% endif %}
+{% endblock use_statements %}
+
+/**
+{% block phpdoc_class_header %}
+ * {{ class_name }} service.
+{% endblock phpdoc_class_header %}
+ */
+{% block class_definition %}
+class {{ class_name }}
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @var {{ entity }}Repository
+     */
+    protected $repository;
+    /**
+     * @var FormFactoryInterface
+     */
+    protected $formFactory;
+    /**
+     * Init Handler.
+     *
+     * @param {{ entity }}Repository $repository
+     * @param FormFactoryInterface $formFactory
+     */
+    public function __construct({{ entity }}Repository $repository, FormFactoryInterface $formFactory)
+    {
+        $this->repository = $repository;
+        $this->formFactory = $formFactory;
+    }
+    /**
+    * Get {{ entity }} object list from repository.
+    *
+    * @param array $criteria
+    * @param array $sort
+    * @param integer $limit
+    * @param integer $skip
+    */
+    public function getBy(array $criteria, array $sort = null, $limit = null, $skip = null)
+    {
+        return $this->repository->findBy($criteria, $sort, $limit, $skip);
+    }
+    /**
+    * Get {{ entity }} object from repository.
+    *
+    * @param integer $id
+    */
+    public function get($id)
+    {
+        return $this->repository->find($id);
+    }
+    /**
+    * Insert {{ entity }} object to repository.
+    *
+    * @param array $params
+    */
+    public function post(array $params)
+    {
+        ${{ entity_singularized }} = new {{ entity }}();
+        $form = $this->formFactory->create({{ entity }}Type::class, ${{ entity_singularized }}, array('method' => 'POST'));
+        $form->submit($params);
+
+        if ($form->isValid()) {
+            $raw{{ entity }} = $this->repository->insert(${{ entity_singularized }});
+
+            return $raw{{ entity }};
+        }
+
+        return $form;
+    }
+    /**
+    * Update {{ entity }} object from repository.
+    *
+    * @param integer|string $id
+    * @param array $params
+    */
+    public function put($id, array $params)
+    {
+        ${{ entity_singularized }} = $this->repository->find($id);
+        $form = $this->formFactory->create({{ entity }}Type::class, ${{ entity_singularized }}, array('method' => 'PUT'));
+        $form->submit($params);
+
+        if ($form->isValid()) {
+            $this->repository->update();
+            return ${{ entity_singularized }};
+        }
+
+        return $form;
+    }
+    /**
+    * @param integer|string $id
+    */
+    public function delete($id)
+    {
+        ${{ entity_singularized }} = $this->repository->find($id);
+
+        if (null === ${{ entity_singularized }}) {
+            return false;
+        }
+
+        $this->repository->remove(${{ entity_singularized }});
+
+        return true;
+    }
+{% endblock class_body %}
+}
