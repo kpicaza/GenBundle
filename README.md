@@ -360,3 +360,5 @@ anotaciones. Ver documentación oficicial sobre validaciones.
 
 Ya tenemos nuestro rest creado, podemo ver la documentación y probarlos en la ruta
 `/api/doc`.
+
+![Generated docs](Resources/doc/docs-snapshot.png)
