@@ -1,4 +1,3 @@
-
     /**
 {% block phpdoc_method_header %}
      * Creates a new {{ entity }} entity.
@@ -8,8 +7,13 @@
      * @ApiDoc(
      *   section = "{{ entity }}s",
      *   description = "Create new {{ entity_singularized }}.",
-     *   input = "AppBundle\Entity\{{ entity }}",
-     *   output = "AppBundle\Entity\{{ entity }}",
+     *   parameters={
+{% for field, params in fields %}
+{% if 'id' != field %}
+     *       {"name"="{{ field }}", "dataType"="{{ params['type'] }}", "required"={% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}},
+{% endif %}
+{% endfor %}
+     *   },
      *   statusCodes = {
      *     201 = "New {{ entity_singularized }} was created.",
      *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
@@ -25,11 +29,10 @@
         ${{ entity_singularized }} = $this->get('app.api_{{ entity_singularized }}_handler')->post(
             $request->request->all()
         );
-
 {% endblock method_body %}
 
 {% block method_return %}
-        $view = $this->view(${{ entity_singularized }});
+        $view = $this->view(array(), 201);
 
         return $this->handleView($view);
 {% endblock method_return %}

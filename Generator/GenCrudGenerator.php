@@ -17,7 +17,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
     {
         $this->routePrefix = $routePrefix;
         $this->routeNamePrefix = self::getRouteNamePrefix($routePrefix);
-        $this->actions = $needWriteActions ? array('index', 'show', 'new', 'edit', 'delete') : array('index', 'show');
+        $this->actions = $needWriteActions ? array('index', 'show', 'new', 'edit', 'delete', 'options') : array('index', 'show', 'options');
 
         if (count($metadata->identifier) != 1) {
             throw new \RuntimeException('The CRUD generator does not support entity classes with multiple or no primary keys.');
@@ -231,7 +231,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             'format' => $this->format,
             'class_name' => $classname,
             'service' => $service,
-            'fields' => $entityClass . 'Interface' == $classname ? $this->metadata->fieldMappings : null
+            'fields' => $this->metadata->fieldMappings
         ));
     }
 
@@ -305,7 +305,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
 
         $file = sprintf('%s/config/%s', $this->rootDir, 'gen/services.yml');
 
-        file_put_contents($file, $yaml, FILE_APPEND);
+        file_put_contents($file, $yaml);
     }
 
     protected function genParamsData()

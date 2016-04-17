@@ -9,27 +9,26 @@
      *   description = "Get {{ entity_singularized }} by ID.",
      *   statusCodes = {
      *     200 = "Show {{ entity_singularized }} info.",
-     *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
-     *     403 = "Authorization failure, user does not have permission to access this area.",
+     *     400 = "Invalid request.",
      *   }
      * )
 {% endblock phpdoc_method_annotations %}
      */
 {% block method_definition %}
-    public function get{{ entity }}Action($id)
+    public function options{{ entity }}Action()
 {% endblock method_definition %}
     {
 {% block method_body %}
-        ${{ entity_singularized }} = $this->get('app.api_{{ entity_singularized }}_handler')->get($id);
-
-        if (null === ${{ entity_singularized }}) {
-            throw new NotFoundHttpException('{{ entity }} not found');
-        }
+        $options = $this->get('app.api_{{ entity_singularized }}_handler')->options();
 {% endblock method_body %}
 
 {% block method_return %}
-        $view = $this->view(${{ entity_singularized }});
+        $view = $this->view($options);
 
-        return $this->handleView($view);
+        $response = $this->handleView($view);
+
+        $response->headers->set('Allow', 'OPTIONS, GET, PUT, POST');
+
+        return $response;
 {% endblock method_return %}
     }

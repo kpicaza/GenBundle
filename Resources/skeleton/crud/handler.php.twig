@@ -114,5 +114,65 @@ class {{ class_name }}
 
         return true;
     }
+    /**
+    * Get Resources info.
+    */
+    public function options()
+    {
+        return array(
+{% for method in ['GET', 'POST', 'PUT', 'DELETE'] %}
+            'GET' => array(
+                'description' => 'Get list of {{ entity_pluralized }} or get a resource by id.',
+                'parameters' => array(
+                    'id' => array(
+                        'type' => 'integer|string',
+                        'description' => '{{ entity }} Id.',
+                        'required' => false
+                    )
+                )
+            ),
+{%- if 'new' in actions %}
+            'POST' => array(
+                'description' => 'Create anew reource of type {{ entity }}',
+                'parameters' => array(
+{% for field, params in fields %}
+{% if 'id' != field %}
+                    '{{ field }}' => array(
+                        'type' => '{{ params['type'] }}',
+                        'required' => {% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}
+                    ),
+{% endif %}
+{% endfor %}
+                )
+            ),
+{% endif %}
+{%- if 'edit' in actions %}
+            'PUT' => array(
+                'description' => 'Create anew reource of type {{ entity }}',
+                'parameters' => array(
+{% for field, params in fields %}
+                    '{{ field }}' => array(
+                        'type' => '{{ params['type'] }}',
+                        'required' => {% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}
+                    ),
+{% endfor %}
+                )
+            ),
+{% endif %}
+{%- if 'delete' in actions %}
+            'DELETE' => array(
+                'description' => 'Delete a {{ entity }} resource by id.',
+                'parameters' => array(
+                    'id' => array(
+                        'type' => 'integer|string',
+                        'description' => '{{ entity }} Id.',
+                        'required' => false
+                    )
+                )
+            ),
+{% endif %}
+{% endfor %}
+        );
+    }
 {% endblock class_body %}
 }

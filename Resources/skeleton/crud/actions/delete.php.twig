@@ -1,4 +1,3 @@
-
     /**
 {% block phpdoc_method_header %}
      * Deletes a {{ entity }} entity.
@@ -11,6 +10,7 @@
      *   statusCodes = {
      *     204 = "{{ entity }} was successfully deleted.",
      *     401 = "Authentication failure, user does not have permission or API token is invalid or outdated.",
+     *     403 = "Authorization failure, user does not have permission to access this area.",
      *   }
      * )
 {% endblock phpdoc_method_annotations %}

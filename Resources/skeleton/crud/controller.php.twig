@@ -48,5 +48,10 @@ class {{ entity_class }}Controller extends FOSRestController
     {%- if 'delete' in actions %}
         {%- include 'crud/actions/delete.php.twig' %}
     {%- endif %}
+
+    {%- if 'options' in actions %}
+        {%- include 'crud/actions/options.php.twig' %}
+    {%- endif %}
+
 {% endblock class_body %}
 }
