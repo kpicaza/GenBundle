@@ -336,6 +336,11 @@ Por último necesitaremos definir las clases de nuestro repositorio
     |_ Repository/
     |   |_ PostGateway.php
 
+Fuera de nuestro bundle en la carpeta `app/config/gen/` se ha generado un archivo
+`services.yml` copiamos su contenido y lo pegamos en `app/config/services.yml`. Este
+archivo contiene los servicios que se ha auto generado, más todo el contenido que
+disponia el archivo `services.yml` original.
+
 En este momento hemos generado cantidad de código, todo el modelo, el handler y el
 controlador de nuestra entidad, para que el patrón repositorio funcione
 correctamente necesitamo hacer que nuestra entidad implemente el nuevo interface
@@ -355,10 +360,10 @@ que se ha generado.
      */
     class Post implements PostInterface
 
-*Añadimos el namespace `Constraints` como asser para añadir validacion mediante
+*Añadimos el namespace `Constraints` como `Assert` para añadir validacion mediante
 anotaciones. Ver documentación oficicial sobre validaciones.
 
-Ya tenemos nuestro rest creado, podemo ver la documentación y probarlos en la ruta
-`/api/doc`.
+Ya tenemos nuestro rest creado, podemos ver la documentación y probar los recursos
+ en la ruta `/api/doc`.
 
 ![Generated docs](Resources/doc/docs-snapshot.png)
