@@ -120,7 +120,6 @@ class {{ class_name }}
     public function options()
     {
         return array(
-{% for method in ['GET', 'POST', 'PUT', 'DELETE'] %}
             'GET' => array(
                 'description' => 'Get list of {{ entity_pluralized }} or get a resource by id.',
                 'parameters' => array(
@@ -131,7 +130,7 @@ class {{ class_name }}
                     )
                 )
             ),
-{%- if 'new' in actions %}
+{% if 'new' in actions %}
             'POST' => array(
                 'description' => 'Create anew reource of type {{ entity }}',
                 'parameters' => array(
@@ -140,13 +139,14 @@ class {{ class_name }}
                     '{{ field }}' => array(
                         'type' => '{{ params['type'] }}',
                         'required' => {% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}
+
                     ),
 {% endif %}
 {% endfor %}
                 )
             ),
 {% endif %}
-{%- if 'edit' in actions %}
+{% if 'edit' in actions %}
             'PUT' => array(
                 'description' => 'Create anew reource of type {{ entity }}',
                 'parameters' => array(
@@ -154,12 +154,13 @@ class {{ class_name }}
                     '{{ field }}' => array(
                         'type' => '{{ params['type'] }}',
                         'required' => {% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}
+
                     ),
 {% endfor %}
                 )
             ),
 {% endif %}
-{%- if 'delete' in actions %}
+{% if 'delete' in actions %}
             'DELETE' => array(
                 'description' => 'Delete a {{ entity }} resource by id.',
                 'parameters' => array(
@@ -171,7 +172,6 @@ class {{ class_name }}
                 )
             ),
 {% endif %}
-{% endfor %}
         );
     }
 {% endblock class_body %}

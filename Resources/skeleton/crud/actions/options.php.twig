@@ -1,12 +1,12 @@
     /**
 {% block phpdoc_method_header %}
-     * Finds and displays a {{ entity }} entity.
+     * Display a {{ entity }} resource options.
 {% endblock phpdoc_method_header %}
      *
 {% block phpdoc_method_annotations %}
      * @ApiDoc(
      *   section = "{{ entity }}s",
-     *   description = "Get {{ entity_singularized }} by ID.",
+     *   description = "Display a {{ entity }} resource options.",
      *   statusCodes = {
      *     200 = "Show {{ entity_singularized }} info.",
      *     400 = "Invalid request.",
@@ -27,7 +27,7 @@
 
         $response = $this->handleView($view);
 
-        $response->headers->set('Allow', 'OPTIONS, GET, PUT, POST');
+        $response->headers->set('Allow', 'OPTIONS, GET{%- if 'edit' in actions %}, PUT{% endif %}{%- if 'new' in actions %}, POST{% endif %}{%- if 'delete' in actions %}, DELETE{% endif %}');
 
         return $response;
 {% endblock method_return %}
