@@ -211,6 +211,26 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         );
     }
 
+    protected function generateTestClass()
+    {
+        $parts = explode('\\', $this->entity);
+        $entityClass = array_pop($parts);
+        $entityNamespace = implode('\\', $parts);
+
+        $dir = sprintf('%s/../tests/%s/%s/', $this->rootDir, $this->bundle->getName(), 'model');
+
+        $target = $dir . $entityClass . 'RepositoryTest.php';
+
+        $this->processRenderFile(
+            'crud/tests/repositoryTest.php.twig',
+            $target,
+            $entityClass . 'RepositoryTest',
+            $entityClass,
+            null,
+            null
+        );
+    }
+
     /**
      * @param $file
      * @param $target
@@ -358,7 +378,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             $this->format
         );
 
-        $this->renderFile('crud/config/routing.'.$this->format.'.twig', $target, array(
+        $this->renderFile('crud/config/routing.' . $this->format . '.twig', $target, array(
             'actions' => $this->actions,
             'route_prefix' => $this->routePrefix,
             'route_name_prefix' => $this->routeNamePrefix,

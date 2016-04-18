@@ -18,11 +18,18 @@ interface {{ class_name }}
      */
     public function get{{ field | capitalize }}();
 
-{% if 'id' != field %}
+{% if params['type'] == 'datetime' %}
+    /**
+     * Set \DateTime {{ field }}.
+     */
+    public function set{{ field |capitalize }}(\DateTime ${{ field }});
+
+{% elseif 'id' != field %}
     /**
      * Set {{ field }}.
      */
     public function set{{ field |capitalize }}(${{ field }});
+
 {% endif %}
 {% endfor %}
 

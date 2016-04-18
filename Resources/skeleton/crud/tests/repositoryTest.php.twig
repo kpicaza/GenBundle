@@ -1,0 +1,109 @@
+<?php
+
+namespace Tests\{{ bundle }}\Model;
+
+{% block use_statements %}
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use {{ bundle }}\Entity\{{ entity }};
+use {{ bundle }}\Repository\{{ entity }}Gateway;
+use {{ bundle }}\Model\{{ entity }}\{{ entity }}Factory;
+use {{ bundle }}\Model\{{ entity }}\{{ entity }}Repository;
+use Faker;
+{% endblock use_statements %}
+
+{% block class_definition %}
+class {{ entity_class }}RepositoryTest extends WebTestCase
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @var {{ entity }}Factory
+     */
+    private $factory;
+
+    /**
+     * @var Faker\
+     */
+    private $faker;
+
+    /**
+     * @var {{ entity }}Gateway
+     */
+    private $gateway;
+
+    /**
+     * @var {{ entity }}Repository
+     */
+    private $repository;
+
+    /**
+     * Set up {{ entity }}Repository.
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $gatewayClassname = '{{ bundle }}\Repository\{{ entity }}Gateway';
+        $this->gateway = $this->prophesize($gatewayClassname);
+        $this->factory = new {{ entity }}Factory();
+        $this->repository = new {{ entity }}Repository($this->gateway->reveal(), $this->factory);
+        $this->faker = Faker\Factory::create();
+    }
+
+    public function test{{ entity }}($return = false)
+    {
+        ${{ entity_singularized }} = new {{ entity }}();
+
+        ${{ entity_singularized }}
+{% for field, params in fields %}
+{% if 'id' == field %}
+{% elseif 'firstname' in field or 'lastname' in field or 'nickname' in field%}
+            ->set{{ field |capitalize }}($this->faker->name)
+{% elseif 'text' == params['type'] %}
+            ->set{{ field |capitalize }}($this->faker->sentences(3))
+{% elseif 'datetime' == params['type'] %}
+            ->set{{ field |capitalize }}($this->faker->datetime)
+{% else %}
+            ->set{{ field |capitalize }}($this->faker->words(3))
+{% endif %}
+{% endfor %}
+        ;
+
+        if (true === $return) {
+            return ${{ entity_singularized }};
+        }
+    }
+
+    public function testFindOneByWithParams()
+    {
+        $fake{{ entity }} = $this->test{{ entity }}(true);
+
+        $this->gateway->findOneBy(array())->willReturn($fake{{ entity }});
+        $fake{{ entity }} = $this->factory->makeOne($fake{{ entity }});
+
+        ${{ entity_singularized }} = $this->repository->findOneBy(array());
+
+        $this->assertTrue(${{ entity_singularized }} instanceof {{ entity }});
+
+{% for field, params in fields %}
+        $this->assertEquals(${{ entity_singularized }}->get{{ field |capitalize }}(), $fake{{ entity }}->get{{ field |capitalize }}());
+{% endfor %}
+    }
+
+    public function testFindByWithParams()
+    {
+        $fake{{ entity }} = $this->test{{ entity }}(true);
+
+        $this->gateway->findBy(array(), null, null, null)->willReturn(array($fake{{ entity }}));
+        $fake{{ entity }}s = $this->factory->makeAll(array($fake{{ entity }}));
+
+        ${{ entity_singularized }}s = $this->repository->findBy(array(), null, null, null);
+        foreach (${{ entity_singularized }}s as $key => ${{ entity_singularized }}) {
+            $this->assertTrue(${{ entity_singularized }} instanceof {{ entity }});
+{% for field, params in fields %}
+            $this->assertEquals(${{ entity_singularized }}->get{{ field |capitalize }}(), $fake{{ entity }}->get{{ field |capitalize }}());
+{% endfor %}
+        }
+    }
+
+{% endblock class_body %}
+}
