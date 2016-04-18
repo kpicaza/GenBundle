@@ -1,0 +1,3 @@
+{% if options['delete']['security'] is defined and 0 < options['delete']['security'] | length%}
+     * @Security("has_role('{% for role in options['delete']['security'] %}{{ role }}{% endfor %}')")
+{% endif %}

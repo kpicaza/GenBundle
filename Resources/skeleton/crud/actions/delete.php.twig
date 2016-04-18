@@ -4,9 +4,7 @@
 {% endblock phpdoc_method_header %}
      *
 {% block phpdoc_method_annotations %}
-{% if options['delete']['security'] is defined %}
-     * @Security("has_role('{% for role in options['delete']['security'] %}{{ role }}',{% endfor %})")
-{% endif %}
+{% include 'skeleton/crud/actions/security.php.twig' %}
      * @ApiDoc(
      *   section = "{{ entity }}s",
      *   description = "Delete {{ entity_singularized }} by id.",
