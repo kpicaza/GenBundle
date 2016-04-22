@@ -5,7 +5,8 @@ namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ 
 {% block use_statements %}
 use AppBundle\Model\{{ entity }}\{{ entity }}Repository;
 use Symfony\Component\Form\FormFactoryInterface;
-use {{ namespace }}\Entity\{{ entity }};
+use {{ namespace }}\Model\{{ entity }}\{{ entity }}Interface;
+use {{ namespace }}\Exception\InvalidFormException;
 {% if 'new' in actions or 'edit' in actions %}
 use {{ namespace }}\Form\{{ entity }}Type;
 {% endif %}
@@ -68,7 +69,7 @@ class {{ class_name }}
     */
     public function post(array $params)
     {
-        ${{ entity_singularized }} = new {{ entity }}();
+        ${{ entity_singularized }} = $this->repository->findNew();
         $form = $this->formFactory->create({{ entity }}Type::class, ${{ entity_singularized }}, array('method' => 'POST'));
         $form->submit($params);
 
@@ -78,7 +79,7 @@ class {{ class_name }}
             return $raw{{ entity }};
         }
 
-        return $form;
+        throw new InvalidFormException('Invalid submitted data', $form);
     }
     /**
     * Update {{ entity }} object from repository.
@@ -97,7 +98,7 @@ class {{ class_name }}
             return ${{ entity_singularized }};
         }
 
-        return $form;
+        throw new InvalidFormException('Invalid submitted data', $form);
     }
     /**
     * @param integer|string $id

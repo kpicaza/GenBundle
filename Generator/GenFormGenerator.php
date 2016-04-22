@@ -3,6 +3,7 @@
 namespace Kpicaza\GenBundle\Generator;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Kpicaza\GenBundle\Formatter\FieldFormatter;
 use Sensio\Bundle\GeneratorBundle\Generator\DoctrineFormGenerator;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
@@ -32,6 +33,11 @@ class GenFormGenerator extends DoctrineFormGenerator
         return $this->classPath;
     }
 
+    public function getFieldFormatter()
+    {
+        return new FieldFormatter();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -55,11 +61,13 @@ class GenFormGenerator extends DoctrineFormGenerator
         $parts = explode('\\', $entity);
         array_pop($parts);
 
-        $mappings = $this->formatMappings($metadata->fieldMappings);
+        $formatter = $this->getFieldFormatter();
+        $mappings = $formatter->formatMappings($metadata->fieldMappings);
 
         $this->renderFile('form/FormType.php.twig', $this->classPath, array(
             'fields' => $this->getFieldsFromMetadata($metadata),
             'fields_mapping' => $mappings,
+            'metadata' => $metadata->fieldMappings,
             'namespace' => $bundle->getNamespace(),
             'entity_namespace' => implode('\\', $parts),
             'entity_class' => $entityClass,
@@ -79,7 +87,7 @@ class GenFormGenerator extends DoctrineFormGenerator
      */
     private function getFieldsFromMetadata(ClassMetadataInfo $metadata)
     {
-        $fields = (array) $metadata->fieldNames;
+        $fields = (array)$metadata->fieldNames;
 
         // Remove the primary key field if it's not managed manually
         if (!$metadata->isIdentifierNatural()) {
@@ -88,25 +96,11 @@ class GenFormGenerator extends DoctrineFormGenerator
 
         foreach ($metadata->associationMappings as $fieldName => $relation) {
             if ($relation['type'] !== ClassMetadataInfo::ONE_TO_MANY) {
-                $fields[] = $fieldName;
+                $fields[] = sprintf('%s_%s', $fieldName, 'id');
             }
         }
 
         return $fields;
     }
-    protected function formatMappings($mappings)
-    {
-//        $types = array(
-//            'string' => 'Type\\TextType::class',
-//            'text' => 'Type\\TextareaType::class',
-//            'datetime' => 'Type\\DateTimeType::class',
-//            'integer' => 'Type\\NumberType::class',
-//        );
 
-        foreach ($mappings as $key => $mapping) {
-            $mappings[$key] = 'Type\\TextType::class';
-        }
-
-        return $mappings;
-    }
 }

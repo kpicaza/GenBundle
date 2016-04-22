@@ -1,0 +1,10 @@
+{% for field, params in fields %}
+{% if 'id' == field or 'created' in field or 'updated' in field %}
+{% elseif 'firstname' in field or 'lastname' in field or 'nickname' in field%}
+           "{{ field }}" => $this->faker->name,
+{% elseif 'text' == params['type'] %}
+           "{{ field }}" => $this->faker->text(180),
+{% else %}
+           "{{ field }}" => $this->faker->sentence(3),
+{% endif %}
+{% endfor %}

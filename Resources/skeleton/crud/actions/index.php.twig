@@ -21,12 +21,15 @@
 {% endblock method_definition %}
     {
 {% block method_body %}
-        ${{ entity_pluralized }} = $this->get({{ "'" ~ service ~ "'"}})->getBy(array());
+        try {
+            ${{ entity_pluralized }} = $this->get({{ "'" ~ service ~ "'"}})->getBy(array());
 
 {% endblock method_body %}
-
 {% block method_return %}
-        $view = $this->view(${{ entity_pluralized }});
+            $view = $this->view(${{ entity_pluralized }}, Response::HTTP_CREATED);
+        } catch (InvalidFormException $exception) {
+            $view = $this->view($exception->getForm(), Response::HTTP_BAD_REQUEST);
+        }
 
         return $this->handleView($view);
 {% endblock method_return %}

@@ -1,7 +1,5 @@
 <?php
-
 namespace {{ namespace }}\Form{{ entity_namespace ? '\\' ~ entity_namespace : '' }};
-
 {% block use_statements %}
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,13 +9,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 {% endif %}
 use Symfony\Component\OptionsResolver\OptionsResolver;
 {% endblock use_statements %}
-
 {% block class_definition %}
 class {{ form_class }} extends AbstractType
 {% endblock class_definition %}
 {
 {% block class_body %}
-    {%- if fields|length > 0 %}
+{% if fields|length > 0 %}
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -25,25 +22,22 @@ class {{ form_class }} extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-
-        {%- for field in fields -%}
-            {%- if fields_mapping[field] is defined %}
-
-            ->add('{{ field }}', {{ fields_mapping[field] }})
-
-            {%- else %}
-
+{% for field in fields %}
+{% if fields_mapping[field] is defined %}
+{% if'created' not in field and 'DateTime' not in fields_mapping[field]
+or fields_mapping[field] is defined and 'updated' not in field and 'DateTime' not in fields_mapping[field] %}
+            ->add('{{ field }}', {{ fields_mapping[field] }}, array(
+                'required' => {% if metadata[field]['nullable'] is not defined or metadata[field]['nullable'] == false %}true{% else %}false{% endif %},
+            ))
+{% endif %}
+{% else %}
             ->add('{{ field }}')
-
-            {%- endif -%}
-        {%- endfor %}
-
+{% endif %}
+{% endfor %}
         ;
     }
-    {% endif %}
-
-    {%- if not configure_options_available %}
-
+{% endif %}
+{% if not configure_options_available %}
     /**
      * Sets the default options for this type.
      *
@@ -55,8 +49,7 @@ class {{ form_class }} extends AbstractType
     {
         $this->configureOptions($resolver);
     }
-    {% endif %}
-
+{% endif %}
     /**
      * @param OptionsResolver $resolver
      */
@@ -67,9 +60,7 @@ class {{ form_class }} extends AbstractType
             'csrf_protection' => false,
         ));
     }
-
-    {%- if get_name_required %}
-
+{% if get_name_required %}
     /**
      * @return string
      */
@@ -77,7 +68,6 @@ class {{ form_class }} extends AbstractType
     {
         return '{{ form_type_name }}';
     }
-    {% endif %}
-
+{% endif %}
 {% endblock class_body %}
 }

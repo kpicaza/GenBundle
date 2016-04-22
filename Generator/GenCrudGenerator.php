@@ -43,6 +43,8 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             $this->generateHandlers($service, $arguments, $forceOverwrite);
         }
 
+        $this->generateHandlerException();
+
         $this->generateControllerClass($forceOverwrite);
 
         $dir = sprintf('%s/Resources/views/%s', $this->rootDir, str_replace('\\', '/', strtolower($this->entity)));
@@ -125,6 +127,13 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         );
 
         $this->addToServices($this->data[0]['Handlers']);
+    }
+
+    protected function generateHandlerException()
+    {
+        return $this->renderFile('crud/formException.php.twig', sprintf('%s/Exception/InvalidFormException.php', $this->bundle->getPath()), array(
+            'namespace' => $this->bundle->getNamespace(),
+        ));
     }
 
     /**
@@ -215,20 +224,28 @@ class GenCrudGenerator extends DoctrineCrudGenerator
     {
         $parts = explode('\\', $this->entity);
         $entityClass = array_pop($parts);
-        $entityNamespace = implode('\\', $parts);
 
-        $dir = sprintf('%s/../tests/%s/%s/', $this->rootDir, $this->bundle->getName(), 'model');
-
-        $target = $dir . $entityClass . 'RepositoryTest.php';
-
-        $this->processRenderFile(
-            'crud/tests/repositoryTest.php.twig',
-            $target,
-            $entityClass . 'RepositoryTest',
-            $entityClass,
-            null,
-            null
+        $tests = array(
+            'Model' => 'repository',
+            'Controller' => 'controller'
         );
+
+        foreach ($tests as $test => $type) {
+            $dir = sprintf('%s/../tests/%s/%s/', $this->rootDir, $this->bundle->getName(), $test);
+
+            $target = $dir . $entityClass . $test . 'Test.php';
+
+
+
+            $this->processRenderFile(
+                sprintf('crud/tests/%sTest.php.twig', $type),
+                $target,
+                sprintf('%s%sTest', $entityClass, ucfirst($type)),
+                $entityClass,
+                $test,
+                null
+            );
+        }
     }
 
     /**

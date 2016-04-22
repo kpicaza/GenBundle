@@ -44,12 +44,8 @@ class {{ class_name }} implements {{ entity }}FactoryInterface
     * @param {{ entity }}Interface $rawUser
     * @return {{ entity }}Interface
     */
-    public function make($raw{{ entity }}, array $params = array())
+    public function make({{ entity }}Interface $raw{{ entity }}, array $params = array())
     {
-        if (!$raw{{ entity }} instanceof {{ entity }}Interface) {
-            return null;
-        }
-
         // You can format object, in this case we left it to return as raw object, feedback is welcome!
         return $raw{{ entity }};
     }

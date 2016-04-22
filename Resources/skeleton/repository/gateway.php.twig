@@ -5,6 +5,7 @@ namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ 
 {% block use_statements %}
 use AppBundle\Model\{{ entity }}\{{ entity }}GatewayInterface;
 use AppBundle\Model\{{ entity }}\{{ entity }}Interface;
+use AppBundle\Entity\{{ entity }};
 use Doctrine\ORM\EntityRepository;
 {% endblock use_statements %}
 

@@ -10,7 +10,7 @@
      *   description = "Create new {{ entity_singularized }}.",
      *   parameters={
 {% for field, params in fields %}
-{% if 'id' != field %}
+{% if 'id' != field and 'created' not in field and 'updated' not in field %}
      *       {"name"="{{ field }}", "dataType"="{{ params['type'] }}", "required"={% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}},
 {% endif %}
 {% endfor %}
@@ -27,13 +27,17 @@
 {% endblock method_definition %}
     {
 {% block method_body %}
-        ${{ entity_singularized }} = $this->get('app.api_{{ entity_singularized }}_handler')->post(
-            $request->request->all()
-        );
-{% endblock method_body %}
+        try {
+            ${{ entity_singularized }} = $this->get('app.api_{{ entity_singularized }}_handler')->post(
+                $request->request->all()
+            );
 
+{% endblock method_body %}
 {% block method_return %}
-        $view = $this->view(array(), 201);
+            $view = $this->view(array(), Response::HTTP_CREATED);
+        } catch (InvalidFormException $exception) {
+            $view = $this->view($exception->getForm(), Response::HTTP_BAD_REQUEST);
+        }
 
         return $this->handleView($view);
 {% endblock method_return %}

@@ -1,0 +1,46 @@
+<?php
+
+namespace Tests\{{ bundle }}\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Faker;
+
+class {{ entity }}ControllerTest extends WebTestCase
+{
+
+    const ROUTE = '/{{ route_prefix }}/{{ entity_pluralized }}';
+    const ROUTE_ID = '/{{ route_prefix }}/{{ entity_pluralized }}/%s';
+
+    /**
+     * @var Faker\
+     */
+    private $faker;
+
+    private $client = null;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->faker = Faker\Factory::create();
+        $this->client = static::createClient();
+    }
+
+    public function testCreate{{ entity }}WithInvalidParams()
+    {
+        $this->client->request('POST', self::ROUTE, array(
+{% for field, params in fields if 'id' != field %}
+            "{{ field }}" => null,
+{% endfor %}
+        ));
+            $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+        }
+
+    public function testCreate{{ entity }}()
+    {
+        $this->client->request('POST', self::ROUTE, array(
+{% include 'skeleton/crud/tests/fakerForm.php.twig' %}
+        ));
+        $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
+    }
+
+}

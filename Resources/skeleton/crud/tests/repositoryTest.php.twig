@@ -59,11 +59,11 @@ class {{ entity_class }}RepositoryTest extends WebTestCase
 {% elseif 'firstname' in field or 'lastname' in field or 'nickname' in field%}
             ->set{{ field |capitalize }}($this->faker->name)
 {% elseif 'text' == params['type'] %}
-            ->set{{ field |capitalize }}($this->faker->sentences(3))
+            ->set{{ field |capitalize }}($this->faker->text(180))
 {% elseif 'datetime' == params['type'] %}
             ->set{{ field |capitalize }}($this->faker->datetime)
 {% else %}
-            ->set{{ field |capitalize }}($this->faker->words(3))
+            ->set{{ field |capitalize }}($this->faker->sentence(3))
 {% endif %}
 {% endfor %}
         ;
