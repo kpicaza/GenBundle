@@ -346,19 +346,39 @@ controlador de nuestra entidad, para que el patrón repositorio funcione
 correctamente necesitamo hacer que nuestra entidad implemente el nuevo interface
 que se ha generado.
 
-    // src/AppBundle/Entity/Post.php
-    <?php
+        // src/AppBundle/Entity/Post.php
+        <?php
 
-    namespace AppBundle\Entity;
+        namespace AppBundle\Entity;
 
-    use AppBundle\Model\Post\PostInterface;
-    use Symfony\Component\Validator\Constraints as Assert;
-    use Doctrine\ORM\Mapping as ORM;
+        use AppBundle\Model\Post\PostInterface;
+        use Symfony\Component\Validator\Constraints as Assert;
+        use Doctrine\ORM\Mapping as ORM;
 
-    /**
-     * Post
-     */
-    class Post implements PostInterface
+        /**
+         * Post
+         */
+        class Post implements PostInterface
+        ...
+            /**
+             * @ORM\PrePersist
+             */
+            public function setCreatedAtValue()
+            {
+                if (!$this->getCreatedAt()) {
+                    $this->created = new \DateTime();
+                }
+            }
+
+            /**
+             * @ORM\PreUpdate
+             */
+            public function setUpdatedAtValue()
+            {
+                $this->updated = new \DateTime();
+            }
+        ...
+
 
 *Añadimos el namespace `Constraints` como `Assert` para añadir validacion mediante
 anotaciones. Ver documentación oficicial sobre validaciones.

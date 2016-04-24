@@ -334,7 +334,10 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         $yaml = new Parser();
         $services = $yaml->parse(file_get_contents($file));
 
-        $repo_definition = sprintf('app.%s_repository', strtolower($this->entity));
+        if (empty($services['services'][sprintf('app.%s_repository', strtolower($this->entity))])) {
+            $file = sprintf('%s/config/%s', $this->rootDir, 'gen/services.yml');
+            $services = array_merge($services, $yaml->parse(file_get_contents($file)));
+        }
 
         $array = array(
             key($definition) => array(
