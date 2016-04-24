@@ -67,6 +67,7 @@ class FieldFormatter
             'text' => 'Type\\TextareaType::class',
             'datetime' => 'Type\\DateTimeType::class',
             'integer' => 'Type\\NumberType::class',
+            'boolean' => 'Type\\NumberType::class',
         );
     }
 
