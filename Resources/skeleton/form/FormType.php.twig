@@ -24,8 +24,8 @@ class {{ form_class }} extends AbstractType
         $builder
 {% for field in fields %}
 {% if fields_mapping[field] is defined %}
-{% if'created' not in field and 'DateTime' not in fields_mapping[field]
-or fields_mapping[field] is defined and 'updated' not in field and 'DateTime' not in fields_mapping[field] %}
+{% if 'created' not in field and 'DateTime' not in fields_mapping[field]
+or 'updated' not in field and 'DateTime' not in fields_mapping[field] %}
             ->add('{{ field }}', {{ fields_mapping[field] }}, array(
                 'required' => {% if metadata[field]['nullable'] is not defined or metadata[field]['nullable'] == false %}true{% else %}false{% endif %},
             ))
