@@ -298,7 +298,7 @@ Por último necesitaremos definir las clases de nuestro repositorio
             classname: "PostRepository"
             type: Repository
 
-**4.** Ejecutando el comendo
+**4.** Ejecutando el comando
 
 **4.1.** Podemos ver todas las opciones del generador con el siguiente commando:
 
@@ -378,6 +378,17 @@ que se ha generado.
                 $this->updated = new \DateTime();
             }
         ...
+
+Copiamos las definiciones de los servicios que se han generado en el archivo `app/config/gen/services.yml` y las pegamos
+en en `app/configservices.yml`.
+
+Damos de alta la ruta apra fosrest en `app/config/routing.yml`.
+
+    # app/config/routing.yml
+    app_post:
+        type: rest
+        prefix: /api
+        resource: AppBundle\Controller\PostController
 
 
 *Añadimos el namespace `Constraints` como `Assert` para añadir validacion mediante
