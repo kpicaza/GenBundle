@@ -28,7 +28,7 @@
         "twig/twig": "~1.18"
     },
     "autoload": {
-        "psr-4": { "Kpicaza\\Bundle\\GenBundle\\": "" },
+        "psr-4": { "Kpicaza\\GenBundle\\": "" },
         "exclude-from-classmap": [
             "/Tests/"
         ]
