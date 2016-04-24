@@ -1,6 +1,6 @@
 {
     "name": "kpicaza/gen-bundle",
-    "description": "This bundle generates custom code.",
+    "description": "This bundle provides new REST generator command for doctrine generator, using FOSRestBundle.",
     "keywords": [],
     "type": "symfony-bundle",
     "license": "MIT",
@@ -19,7 +19,8 @@
         "nelmio/cors-bundle": "^1.4",
         "friendsofsymfony/rest-bundle": "^1.7",
         "nelmio/api-doc-bundle": "^2.12",
-        "jms/serializer-bundle": "^1.1"
+        "jms/serializer-bundle": "^1.1",
+        "fzaninotto/faker": "~1.3"
     },
     "require-dev": {
         "symfony/doctrine-bridge": "~2.7|~3.0",
