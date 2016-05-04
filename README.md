@@ -7,7 +7,6 @@ This bundle provides new REST generator command for doctrine generator extending
 
 * [Installation](Resources/doc/installation.md)
 * [Basic usage](Resources/doc/basic-usage.md)
-* @TODO [Usage with relations](#/Resources/doc/relations-usage.md)
 
 ## Contributing:
 

@@ -6,7 +6,6 @@ use Kpicaza\GenBundle\Generator\GenCrudGenerator;
 use Kpicaza\GenBundle\Generator\GenFormGenerator;
 use Sensio\Bundle\GeneratorBundle\Command\GenerateDoctrineCrudCommand;
 use Sensio\Bundle\GeneratorBundle\Command\Validators;
-use Sensio\Bundle\GeneratorBundle\Generator\DoctrineCrudGenerator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -105,22 +104,14 @@ EOT
         $output->writeln('Generating the CRUD code: <info>OK</info>');
 
         $errors = array();
-        $runner = $questionHelper->getRunner($output, $errors);
+        $questionHelper->getRunner($output, $errors);
 
         // form
         if ($withWrite) {
             $this->generateForm($bundle, $entity, $metadata, $forceOverwrite);
             $output->writeln('Generating the Form code: <info>OK</info>');
         }
-
-//        // @todo routing
-//        $output->write('Updating the routing: ');
-//        if ('annotation' != $format) {
-//            $runner($this->updateRouting($questionHelper, $input, $output, $bundle, $format, $entity, $prefix));
-//        } else {
-//            $runner($this->updateAnnotationRouting($bundle, $entity, $prefix));
-//        }
-
+        
         $questionHelper->writeGeneratorSummary($output, $errors);
     }
 
