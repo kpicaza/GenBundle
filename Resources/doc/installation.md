@@ -2,7 +2,7 @@
 
 ## Installation
 
-    composer require kpicaza/gen-bundle
+    composer require kpicaza/gen-bundle dev-master
 
 **1.** We need to activate and configure our new bundle and each dependencies.
 
