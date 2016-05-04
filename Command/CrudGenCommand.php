@@ -111,7 +111,7 @@ EOT
             $this->generateForm($bundle, $entity, $metadata, $forceOverwrite);
             $output->writeln('Generating the Form code: <info>OK</info>');
         }
-        
+
         $questionHelper->writeGeneratorSummary($output, $errors);
     }
 
