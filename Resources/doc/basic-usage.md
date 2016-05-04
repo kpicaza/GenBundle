@@ -147,22 +147,27 @@ utilizaremos como recursos. Como ejemplo crearemos la entidad "Post" en yml.
             prePersist: [ setCreatedAtValue ]
             preUpdate: [ setUpdatedAtValue ]
 
-**2.2.** Genelamos el modelo con el siguiente comando
+**2.2.** Generamos el modelo
+
+Creamos la bbdd si no la tenemos creada ya
+
+    php bin/console doctrine:database:create
+
+Generamos la entidad, podemos utilizar doctrine o hacerla a mano
 
     php bin/console doctrine:generate:entities AppBundle:Post
 
 Esto genera un modelo tonto con getters y setters para todos los campos.
 
-Generamos también la bbdd y su esquema.
+Actualizamos el esquema de bbdd.
 
-    php bin/console doctrine:database:create
     php bin/console doctrine:schema:update --force
 
 **3.** Instrucciones del generador
 
 **3.1.** Crearemos el archivo `intructions.yml` en el directorio `app/config/gen/<<Entity>>`
 
-    // app/config/gen/intructions.yml
+    // app/config/gen/Post/intructions.yml
     Controller:
         index:
             security:
