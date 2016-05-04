@@ -164,8 +164,10 @@ EOT
             $skeletonDirs[] = $dir;
         }
 
-        $skeletonDirs[] = __DIR__ . '/../Resources/skeleton';
-        $skeletonDirs[] = __DIR__ . '/../Resources';
+        $kernel = $this->getApplication()->getKernel();
+
+        $skeletonDirs[] = $kernel->locateResource('@KpicazaGenBundle/Resources/skeleton');
+        $skeletonDirs[] = $kernel->locateResource('@KpicazaGenBundle/Resources');
 
         return array_reverse($skeletonDirs);
     }
