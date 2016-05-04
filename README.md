@@ -1,12 +1,13 @@
 # GenBundle
 
-This bundle provides new REST generator command for doctrine generator, using FOSRestBundle.
+This bundle provides new REST generator command for doctrine generator extending
+[SensioGeneratorBundle](https://github.com/sensiolabs/SensioGeneratorBundle).
 
 ## Documentation:
 
 * [Installation](Resources/doc/installation.md)
 * [Basic usage](Resources/doc/basic-usage.md)
-* [Usage with relations](Resources/doc/relations-usage.md)
+* @TODO [Usage with relations](#/Resources/doc/relations-usage.md)
 
 ## Contributing:
 
