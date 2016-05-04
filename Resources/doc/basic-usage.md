@@ -138,9 +138,9 @@ utilizaremos como recursos. Como ejemplo crearemos la entidad "Post" en yml.
                 length: '140'
             description:
                 type: text
-            created:
+            created_at:
                 type: datetime
-            updated:
+            updated_at:
                 type: datetime
                 nullable: true
         lifecycleCallbacks:
@@ -402,4 +402,4 @@ anotaciones. Ver documentación oficicial sobre validaciones.
 Ya tenemos nuestro rest creado, podemos ver la documentación y probar los recursos
  en la ruta `/api/doc`.
 
-![Generated docs](Resources/doc/docs-snapshot.png)
+![Generated docs](docs-snapshot.png)

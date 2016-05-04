@@ -20,30 +20,6 @@ class {{ class_name }} extends EntityRepository implements {{ entity }}GatewayIn
 {
 {% block class_body %}
     /**
-     * @param string|integer|{{ entity }} $id
-     */
-    public function find($id)
-    {
-        return parent::find($id);
-    }
-    /**
-     * @param array $criteria
-     * @param array $sort
-     * @param integer $limit
-     * @param integer $skip
-     */
-    public function findBy(array $criteria, array $sort = null, $limit = null, $skip = null)
-    {
-        return parent::findBy($criteria, $sort, $limit, $skip);
-    }
-    /**
-     * @param array $criteria
-     */
-    public function findOneBy(array $criteria, array $orderBy = null)
-    {
-        return parent::findOneBy($criteria);
-    }
-    /**
      * @return {{ entity }}
      */
     public function findNew($subject = null, $description = null)

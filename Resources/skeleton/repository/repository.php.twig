@@ -3,6 +3,7 @@
 namespace {{ namespace }}\{{ service_namespace ?  service_namespace | replace({ '/': '\\' }) : '' }};
 
 {% block use_statements %}
+use AppBundle\Model\{{ entity }}\{{ entity }}Interface;
 use AppBundle\Model\{{ entity }}\{{ entity }}GatewayInterface;
 use AppBundle\Model\{{ entity }}\{{ entity }}FactoryInterface;
 {% endblock use_statements %}
@@ -80,7 +81,7 @@ class {{ class_name }}
         return $this->gateway->findNew($subject, $description);
     }
     /**
-     * @param {{ entity }} $raw{{ entity }}
+     * @param {{ entity }}Interface $raw{{ entity }}
      *
      * @return type
      */
