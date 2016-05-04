@@ -1,5 +1,7 @@
 # GenBundle
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/5cacdc48-2551-44d4-9ec3-0d3bf3dc7385/mini.png)](https://insight.sensiolabs.com/projects/5cacdc48-2551-44d4-9ec3-0d3bf3dc7385)
+
 This bundle provides new REST generator command for doctrine generator extending
 [SensioGeneratorBundle](https://github.com/sensiolabs/SensioGeneratorBundle).
 
