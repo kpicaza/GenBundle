@@ -20,12 +20,13 @@ class GenRepositoryGenerator extends Generator
     protected $metadata;
     protected $rootDir;
     protected $data;
+    protected $format;
 
     /**
      * Constructor.
      *
      * @param Filesystem $filesystem A Filesystem instance
-     * @param string $rootDir The root dir
+     * @param string     $rootDir    The root dir
      */
     public function __construct(Filesystem $filesystem, $rootDir)
     {
@@ -57,27 +58,26 @@ class GenRepositoryGenerator extends Generator
 
     public function generateRepository($arguments, $forceOverwrite)
     {
-
         $parts = explode('\\', $this->entity);
         $entityClass = array_pop($parts);
         $serviceNamespace = $arguments['dir'];
 
         $items = array(
             'Interface',
-            ''
+            '',
         );
 
         foreach ($items as $item) {
             if ('Gateway' == $arguments['type'] && '' == $item) {
-                $arguments['dir'] = str_replace('Model/' . $this->entity, 'Repository', $arguments['dir']);
+                $arguments['dir'] = str_replace('Model/'.$this->entity, 'Repository', $arguments['dir']);
                 $serviceNamespace = $arguments['dir'];
             }
-            $dir = $this->bundle->getPath() . '/' . $arguments['dir'];
+            $dir = $this->bundle->getPath().'/'.$arguments['dir'];
 
             $target = sprintf(
                 '%s/%s.php',
                 $dir,
-                $arguments['classname'] . $item
+                $arguments['classname'].$item
             );
 
             if (!$forceOverwrite && file_exists($target)) {
@@ -90,7 +90,7 @@ class GenRepositoryGenerator extends Generator
             }
 
             $this->processRenderFile(
-                sprintf('repository/%s.php.twig', strtolower($arguments['type']) . $item),
+                sprintf('repository/%s.php.twig', strtolower($arguments['type']).$item),
                 $target,
                 $arguments['classname'],
                 $entityClass,
@@ -108,12 +108,12 @@ class GenRepositoryGenerator extends Generator
      */
     public function generateEntityInterface($arguments, $forceOverwrite)
     {
-        $dir = $this->bundle->getPath() . '/' . $arguments['dir'];
+        $dir = $this->bundle->getPath().'/'.$arguments['dir'];
 
         $parts = explode('\\', $this->entity);
         $entityClass = array_pop($parts);
         $serviceNamespace = $arguments['dir'];
-        $arguments['classname'] = $entityClass . 'Interface';
+        $arguments['classname'] = $entityClass.'Interface';
         $target = sprintf(
             '%s/%s.php',
             $dir,
@@ -141,8 +141,7 @@ class GenRepositoryGenerator extends Generator
 
         $dir = sprintf('%s/../tests/%s/Model/', $this->rootDir, $this->bundle->getName());
 
-        $target = $dir . $entityClass . 'RepositoryTest.php';
-
+        $target = $dir.$entityClass.'RepositoryTest.php';
 
         $this->processRenderFile(
             'crud/tests/repositoryTest.php.twig',
@@ -176,7 +175,7 @@ class GenRepositoryGenerator extends Generator
             'class_name' => $classname,
             'service' => $service,
             'fields' => $this->metadata->fieldMappings,
-            'options' => $options
+            'options' => $options,
         ));
     }
 
@@ -216,7 +215,7 @@ class GenRepositoryGenerator extends Generator
                 continue;
             }
 
-            $data[] = $yaml->parse(file_get_contents($dir . '/' . $file));
+            $data[] = $yaml->parse(file_get_contents($dir.'/'.$file));
         }
 
         return $data;
@@ -238,9 +237,9 @@ class GenRepositoryGenerator extends Generator
                     'class' => $definition['class'],
                     'arguments' => empty($definition['arguments']) ? null : array(
                         $definition['arguments'][0][0],
-                        empty($definition['arguments'][1][0]) ?: $definition['arguments'][1][0]
-                    )
-                )
+                        empty($definition['arguments'][1][0]) ?: $definition['arguments'][1][0],
+                    ),
+                ),
             );
 
             $arguments = array();

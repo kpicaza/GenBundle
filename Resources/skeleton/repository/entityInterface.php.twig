@@ -16,19 +16,19 @@ interface {{ class_name }}
     /**
      * Get {{ field }}.
      */
-    public function get{{ field | capitalize }}();
+    public function get{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}();
 
 {% if params['type'] == 'datetime' %}
     /**
      * Set \DateTime {{ field }}.
      */
-    public function set{{ field |capitalize }}(\DateTime ${{ field }});
+    public function set{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}(\DateTime ${{ field }});
 
 {% elseif 'id' != field %}
     /**
      * Set {{ field }}.
      */
-    public function set{{ field |capitalize }}(${{ field }});
+    public function set{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}(${{ field }});
 
 {% endif %}
 {% endfor %}

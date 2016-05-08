@@ -11,7 +11,7 @@
      *   parameters={
 {% for field, params in fields %}
 {% if 'id' != field and 'created' not in field and 'updated' not in field %}
-     *       {"name"="{{ field }}", "dataType"="{{ params['type'] }}", "required"={% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}},
+     *       {"name"="{{ field }}", "dataType"="{% if 'boolean' == params['type'] %}integer{% else %}{{ params['type'] }}{% endif %}", "required"={% if params['nullable'] is defined and true == params['nullable'] %}false{% else %}true{% endif %}},
 {% endif %}
 {% endfor %}
      *   },
@@ -35,7 +35,13 @@
             );
 {% endblock method_body %}
 {% block method_return %}
-            $view = $this->view(array(), Response::HTTP_NO_CONTENT);
+            $view = $this->view(
+                array(),
+                Response::HTTP_NO_CONTENT,
+                array(
+                    'Location' => $this->generateUrl('get_{{ entity_singularized }}', array('id' => ${{ entity_singularized }}->getId()), UrlGeneratorInterface::ABSOLUTE_URL)
+                )
+            );
         } catch (InvalidFormException $exception) {
             $view = $this->view($exception->getForm(), Response::HTTP_BAD_REQUEST);
         }

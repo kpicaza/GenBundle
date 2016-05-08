@@ -53,7 +53,6 @@ class GenCrudGenerator extends DoctrineCrudGenerator
 
         $this->generateTestClass();
         $this->generateConfiguration();
-
     }
 
     /**
@@ -98,7 +97,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
      */
     protected function generateHandlers($arguments, $forceOverwrite)
     {
-        $dir = $this->bundle->getPath() . '/' . $arguments['dir'];
+        $dir = $this->bundle->getPath().'/'.$arguments['dir'];
 
         $parts = explode('\\', $this->entity);
         $entityClass = array_pop($parts);
@@ -140,8 +139,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
 
         $dir = sprintf('%s/../tests/%s/Controller/', $this->rootDir, $this->bundle->getName());
 
-        $target = $dir . $entityClass . 'ControllerTest.php';
-
+        $target = $dir.$entityClass.'ControllerTest.php';
 
         $this->processRenderFile(
             'crud/tests/controllerTest.php.twig',
@@ -179,7 +177,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             'class_name' => $classname,
             'service' => $service,
             'fields' => $this->metadata->fieldMappings,
-            'options' => $options
+            'options' => $options,
         ));
     }
 
@@ -204,8 +202,8 @@ class GenCrudGenerator extends DoctrineCrudGenerator
                 'arguments' => array(
                     $definition[key($definition)]['arguments'][0][0],
                     $definition[key($definition)]['arguments'][1][0],
-                )
-            )
+                ),
+            ),
         );
 
         $services['services'][key($array)] = $array[key($array)];
@@ -235,7 +233,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
                 continue;
             }
 
-            $data[] = $yaml->parse(file_get_contents($dir . '/' . $file));
+            $data[] = $yaml->parse(file_get_contents($dir.'/'.$file));
         }
 
         return $data;
@@ -257,7 +255,7 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             $this->format
         );
 
-        $this->renderFile('crud/config/routing.' . $this->format . '.twig', $target, array(
+        $this->renderFile('crud/config/routing.'.$this->format.'.twig', $target, array(
             'actions' => $this->actions,
             'route_prefix' => $this->routePrefix,
             'route_name_prefix' => $this->routeNamePrefix,

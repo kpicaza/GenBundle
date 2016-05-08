@@ -25,6 +25,21 @@ class {{ entity }}ControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
+    public function getLast()
+    {
+        $em = $this->client->getContainer()->get('doctrine')->getManager();
+        ${{ entity|lower }} = $em->getRepository('AppBundle:{{ entity }}')->findOneBy(array());
+
+        return null === ${{ entity|lower }} ? 'invalidId' : ${{ entity|lower }}->getId();
+    }
+
+    public function testValidOptions{{ entity }}s()
+    {
+        $this->client->request('OPTIONS', self::ROUTE);
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testCreate{{ entity }}WithInvalidParams()
     {
         $this->client->request('POST', self::ROUTE, array(
@@ -41,6 +56,69 @@ class {{ entity }}ControllerTest extends WebTestCase
 {% include 'skeleton/crud/tests/fakerForm.php.twig' %}
         ));
         $this->assertEquals(201, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testNotFoundGet{{ entity }}()
+    {
+        $this->client->request('GET', sprintf(self::ROUTE_ID, 'InvalidId'));
+
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testValidGet{{ entity }}()
+    {
+        $id = $this->getLast();
+
+        $this->client->request('GET', sprintf(self::ROUTE_ID, $id));
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testValidGet{{ entity }}s()
+    {
+        $this->client->request('GET', self::ROUTE);
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testPut{{ entity }}WithOutRequiredParams()
+    {
+        $id = $this->getLast();
+
+        $this->client->request('PUT', sprintf(self::ROUTE_ID, $id), array(
+{% for field, params in fields if 'id' != field %}
+            "{{ field }}" => null,
+{% endfor %}
+        ));
+
+        $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testPut{{ entity }}WithValidParams()
+    {
+        $id = $this->getLast();
+
+        $this->client->request('PUT', sprintf(self::ROUTE_ID, $id), array(
+{% include 'skeleton/crud/tests/fakerForm.php.twig' %}
+        ));
+
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testDeleteInvalid{{ entity }}()
+    {
+        $this->client->request('DELETE', sprintf(self::ROUTE_ID, 'invalidId'));
+
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testDelete{{ entity }}()
+    {
+        $id = $this->getLast();
+
+        $this->client->request('DELETE', sprintf(self::ROUTE_ID, $id));
+
+        $this->assertEquals(204, $this->client->getResponse()->getStatusCode());
     }
 
 }

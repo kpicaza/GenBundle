@@ -30,12 +30,12 @@ class {{ class_name }} extends EntityRepository implements {{ entity }}GatewayIn
      * @param {{ entity }}Interface ${{ entity_singularized }}
      * @return {{ entity }}Interface
      */
-    public function insert({{ entity }}Interface $grade)
+    public function insert({{ entity }}Interface ${{ entity_singularized }})
     {
-        $this->_em->persist($grade);
+        $this->_em->persist(${{ entity_singularized }});
         $this->_em->flush();
 
-        return $grade;
+        return ${{ entity_singularized }};
     }
     /**
     * Update {{ entity }}.
