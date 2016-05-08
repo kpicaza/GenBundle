@@ -20,7 +20,7 @@ class {{ class_name }} extends EntityRepository implements {{ entity }}GatewayIn
 {
 {% block class_body %}
     /**
-     * @return {{ entity }}
+     * @return {{ entity }}Interface
      */
     public function findNew($subject = null, $description = null)
     {

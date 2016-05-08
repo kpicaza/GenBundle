@@ -4,6 +4,7 @@ namespace Kpicaza\GenBundle\Command;
 
 use Kpicaza\GenBundle\Generator\GenCrudGenerator;
 use Kpicaza\GenBundle\Generator\GenFormGenerator;
+use Kpicaza\GenBundle\Generator\GenRepositoryGenerator;
 use Sensio\Bundle\GeneratorBundle\Command\GenerateDoctrineCrudCommand;
 use Sensio\Bundle\GeneratorBundle\Command\Validators;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,6 +18,7 @@ class CrudGenCommand extends GenerateDoctrineCrudCommand
 {
     protected $generator;
     protected $formGenerator;
+    protected $repositoryGenerator;
 
     /**
      * @see Command
@@ -98,10 +100,15 @@ EOT
 
         $bundle = $this->getContainer()->get('kernel')->getBundle($bundle);
 
+        $repositoryGenerator = $this->getRepositoryGenerator($bundle);
+        $repositoryGenerator->generate($bundle, $entity, $metadata[0], $format, $forceOverwrite);
+
+        $output->writeln('Generating the Repository pattern code: <info>OK</info>');
+
         $generator = $this->getGenerator($bundle);
         $generator->generate($bundle, $entity, $metadata[0], $format, $prefix, $withWrite, $forceOverwrite);
 
-        $output->writeln('Generating the CRUD code: <info>OK</info>');
+        $output->writeln('Generating the REST code: <info>OK</info>');
 
         $errors = array();
         $questionHelper->getRunner($output, $errors);
@@ -121,6 +128,19 @@ EOT
             $this->getContainer()->get('filesystem'),
             $this->getContainer()->getParameter('kernel.root_dir')
         );
+    }
+
+    protected function getRepositoryGenerator($bundle = null)
+    {
+        if (null === $this->repositoryGenerator) {
+            $this->repositoryGenerator = new GenRepositoryGenerator(
+                $this->getContainer()->get('filesystem'),
+                $this->getContainer()->getParameter('kernel.root_dir')
+            );
+            $this->repositoryGenerator->setSkeletonDirs($this->getSkeletonDirs($bundle));
+        }
+
+        return $this->repositoryGenerator;
     }
 
     protected function getFormGenerator($bundle = null)

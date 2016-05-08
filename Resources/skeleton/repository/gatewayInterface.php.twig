@@ -16,7 +16,7 @@ interface {{ class_name }}Interface
 {
 {% block class_body %}
     /**
-     * @param string|integer|{{ entity }} $id
+     * @param string|integer|{{ entity }}Interface $id
      */
     public function find($id);
     /**
@@ -31,7 +31,7 @@ interface {{ class_name }}Interface
      */
     public function findOneBy(array $criteria, array $orderBy = null);
     /**
-     * @return {{ entity }}
+     * @return {{ entity }}Interface
      */
     public function findNew($subject = null, $description = null);
     /**
