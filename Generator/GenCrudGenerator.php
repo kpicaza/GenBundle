@@ -13,6 +13,8 @@ class GenCrudGenerator extends DoctrineCrudGenerator
 {
     protected $services;
 
+    protected $data;
+
     /**
      * {@inheritdoc}
      */
@@ -35,12 +37,8 @@ class GenCrudGenerator extends DoctrineCrudGenerator
 
         $this->data = $this->genParamsData();
 
-        foreach ($this->data[0]['Repository'] as $service => $arguments) {
-            $this->generateRepository($service, $arguments, $forceOverwrite);
-        }
-
         foreach ($this->data[0]['Handlers'] as $service => $arguments) {
-            $this->generateHandlers($service, $arguments, $forceOverwrite);
+            $this->generateHandlers($arguments, $forceOverwrite);
         }
 
         $this->generateHandlerException();
@@ -95,11 +93,10 @@ class GenCrudGenerator extends DoctrineCrudGenerator
     }
 
     /**
-     * @param $service
      * @param $arguments
      * @param $forceOverwrite
      */
-    protected function generateHandlers($service, $arguments, $forceOverwrite)
+    protected function generateHandlers($arguments, $forceOverwrite)
     {
         $dir = $this->bundle->getPath() . '/' . $arguments['dir'];
 
@@ -136,116 +133,24 @@ class GenCrudGenerator extends DoctrineCrudGenerator
         ));
     }
 
-    /**
-     * @param $service
-     * @param $arguments
-     * @param $forceOverwrite
-     */
-    protected function generateRepository($service, $arguments, $forceOverwrite)
-    {
-
-        $parts = explode('\\', $this->entity);
-        $entityClass = array_pop($parts);
-        $serviceNamespace = $arguments['dir'];
-
-        $items = array(
-            'Interface',
-            ''
-        );
-
-        foreach ($items as $item) {
-            if ('Gateway' == $arguments['type'] && '' == $item) {
-                $arguments['dir'] = str_replace('Model/' . $this->entity, 'Repository', $arguments['dir']);
-                $serviceNamespace = $arguments['dir'];
-            }
-            $dir = $this->bundle->getPath() . '/' . $arguments['dir'];
-
-            $target = sprintf(
-                '%s/%s.php',
-                $dir,
-                $arguments['classname'] . $item
-            );
-
-            if (!$forceOverwrite && file_exists($target)) {
-                throw new \RuntimeException('Unable to generate the repository pattern as it already exists.');
-            }
-
-            if ('Interface' == $item && 'Repository' == $arguments['type']) {
-                $this->generateEntityInterface($arguments, $forceOverwrite);
-                continue;
-            }
-
-            $this->processRenderFile(
-                sprintf('repository/%s.php.twig', strtolower($arguments['type']) . $item),
-                $target,
-                $arguments['classname'],
-                $entityClass,
-                $serviceNamespace,
-                null
-            );
-        }
-
-        $this->addPatternToServices($this->data[0]['Repository']);
-    }
-
-    /**
-     * @param $arguments
-     * @param $forceOverwrite
-     */
-    protected function generateEntityInterface($arguments, $forceOverwrite)
-    {
-        $dir = $this->bundle->getPath() . '/' . $arguments['dir'];
-
-        $parts = explode('\\', $this->entity);
-        $entityClass = array_pop($parts);
-        $serviceNamespace = $arguments['dir'];
-        $arguments['classname'] = $entityClass . 'Interface';
-        $target = sprintf(
-            '%s/%s.php',
-            $dir,
-            $arguments['classname']
-        );
-
-        if (!$forceOverwrite && file_exists($target)) {
-            throw new \RuntimeException('Unable to generate the Interface as it already exists.');
-        }
-
-        $this->processRenderFile(
-            'repository/entityInterface.php.twig',
-            $target,
-            $arguments['classname'],
-            $entityClass,
-            $serviceNamespace,
-            null
-        );
-    }
-
     protected function generateTestClass()
     {
         $parts = explode('\\', $this->entity);
         $entityClass = array_pop($parts);
 
-        $tests = array(
-            'Model' => 'repository',
-            'Controller' => 'controller'
+        $dir = sprintf('%s/../tests/%s/Controller/', $this->rootDir, $this->bundle->getName());
+
+        $target = $dir . $entityClass . 'ControllerTest.php';
+
+
+        $this->processRenderFile(
+            'crud/tests/controllerTest.php.twig',
+            $target,
+            sprintf('%sControllerTest', $entityClass),
+            $entityClass,
+            'Controller',
+            null
         );
-
-        foreach ($tests as $test => $type) {
-            $dir = sprintf('%s/../tests/%s/%s/', $this->rootDir, $this->bundle->getName(), $test);
-
-            $target = $dir . $entityClass . $test . 'Test.php';
-
-
-
-            $this->processRenderFile(
-                sprintf('crud/tests/%sTest.php.twig', $type),
-                $target,
-                sprintf('%s%sTest', $entityClass, ucfirst($type)),
-                $entityClass,
-                $test,
-                null
-            );
-        }
     }
 
     /**
@@ -276,52 +181,6 @@ class GenCrudGenerator extends DoctrineCrudGenerator
             'fields' => $this->metadata->fieldMappings,
             'options' => $options
         ));
-    }
-
-    /**
-     * @param $definitions
-     */
-    protected function addPatternToServices($definitions)
-    {
-        $file = sprintf('%s/config/%s', $this->rootDir, 'services.yml');
-
-        $yaml = new Parser();
-        $services = $yaml->parse(file_get_contents($file));
-
-        foreach ($definitions as $key => $definition) {
-            $array = array(
-                $key => array(
-                    'class' => $definition['class'],
-                    'arguments' => empty($definition['arguments']) ? null : array(
-                        $definition['arguments'][0][0],
-                        empty($definition['arguments'][1][0]) ?: $definition['arguments'][1][0]
-                    )
-                )
-            );
-
-            $arguments = array();
-
-            if (!empty($definition['factory'])) {
-                $arguments['factory'] = $definition['factory'];
-            }
-
-            if (!empty($definition['arguments'])) {
-                $arguments['arguments'][] = $definition['arguments'][0];
-                if (!empty($definition['arguments'][1])) {
-                    $arguments['arguments'][] = $definition['arguments'][1];
-                }
-            }
-
-            $services['services'][$key] = array_merge($array[$key], $arguments);
-        }
-
-        $dumper = new Dumper();
-
-        $yaml = $dumper->dump($services, 4);
-
-        $file = sprintf('%s/config/%s', $this->rootDir, 'gen/services.yml');
-
-        file_put_contents($file, $yaml);
     }
 
     /**
