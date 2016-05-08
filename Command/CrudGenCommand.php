@@ -167,11 +167,11 @@ EOT
     {
         $skeletonDirs = parent::getSkeletonDirs($bundle);
 
-        if (isset($bundle) && is_dir($dir = $bundle->getPath() . '/Resources/skeleton')) {
+        if (isset($bundle) && is_dir($dir = $bundle->getPath().'/Resources/skeleton')) {
             $skeletonDirs[] = $dir;
         }
 
-        if (is_dir($dir = $this->getContainer()->get('kernel')->getRootdir() . '/Resources/skeleton')) {
+        if (is_dir($dir = $this->getContainer()->get('kernel')->getRootdir().'/Resources/skeleton')) {
             $skeletonDirs[] = $dir;
         }
 
@@ -182,5 +182,4 @@ EOT
 
         return array_reverse($skeletonDirs);
     }
-
 }

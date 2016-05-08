@@ -61,7 +61,7 @@ EOT
 
         $forceOverwrite = $input->getOption('overwrite');
 
-        $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle) . '\\' . $entity;
+        $entityClass = $this->getContainer()->get('doctrine')->getAliasNamespace($bundle).'\\'.$entity;
         $metadata = $this->getEntityMetadata($entityClass);
         $bundle = $this->getApplication()->getKernel()->getBundle($bundle);
         $generator = $this->getGenerator($bundle);
@@ -93,11 +93,11 @@ EOT
     {
         $skeletonDirs = parent::getSkeletonDirs($bundle);
 
-        if (isset($bundle) && is_dir($dir = $bundle->getPath() . '/Resources/skeleton')) {
+        if (isset($bundle) && is_dir($dir = $bundle->getPath().'/Resources/skeleton')) {
             $skeletonDirs[] = $dir;
         }
 
-        if (is_dir($dir = $this->getContainer()->get('kernel')->getRootdir() . '/Resources/skeleton')) {
+        if (is_dir($dir = $this->getContainer()->get('kernel')->getRootdir().'/Resources/skeleton')) {
             $skeletonDirs[] = $dir;
         }
 

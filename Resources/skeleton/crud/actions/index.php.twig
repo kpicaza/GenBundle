@@ -26,7 +26,7 @@
 
 {% endblock method_body %}
 {% block method_return %}
-            $view = $this->view(${{ entity_pluralized }}, Response::HTTP_CREATED);
+            $view = $this->view(${{ entity_pluralized }}, Response::HTTP_OK);
         } catch (InvalidFormException $exception) {
             $view = $this->view($exception->getForm(), Response::HTTP_BAD_REQUEST);
         }

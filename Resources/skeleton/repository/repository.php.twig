@@ -45,7 +45,7 @@ class {{ class_name }}
     {
         $raw{{ entity }} = $this->gateway->find($id);
 
-        return $this->factory->makeOne($raw{{ entity }});
+        return null === $raw{{ entity }} ? null : $this->factory->makeOne($raw{{ entity }});
     }
     /**
     * @param array $criteria
@@ -69,7 +69,9 @@ class {{ class_name }}
     */
     public function findBy(array $criteria = array(), $sort = null, $limit = null, $skip = null)
     {
-        return $this->gateway->findBy($criteria, $sort, $limit, $skip);
+        ${{ entity_pluralized }} = $this->gateway->findBy($criteria, $sort, $limit, $skip);
+
+        return null === ${{ entity_pluralized }} ? null : $this->factory->makeAll(${{ entity_pluralized }});
     }
     /**
     * @param null $subject
@@ -78,18 +80,20 @@ class {{ class_name }}
     */
     public function findNew($subject = null, $description = null)
     {
-        return $this->gateway->findNew($subject, $description);
+        ${{ entity_singularized }} = $this->gateway->findNew($subject, $description);
+
+        return null === ${{ entity_singularized }} ? null : $this->factory->makeOne(${{ entity_singularized }});
     }
     /**
      * @param {{ entity }}Interface $raw{{ entity }}
      *
-     * @return type
+     * @return {{ entity }}Interface
      */
     public function insert({{ entity }}Interface $raw{{ entity }})
     {
         ${{ entity_singularized }} = $this->gateway->insert($raw{{ entity }});
 
-        return $this->factory->makeOne(${{ entity_singularized }});
+        return null === ${{ entity_singularized }} ? null : $this->factory->makeOne(${{ entity_singularized }});
     }
     /**
     * @param {{ entity }}Interface $raw{{ entity }}

@@ -5,15 +5,14 @@ namespace Kpicaza\GenBundle\Formatter;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Class FieldFormatter
- * @package Kpicaza\GenBundle\Formatter
+ * Class FieldFormatter.
  */
 class FieldFormatter
 {
-    
     /**
      * @param $mappings
      * @param $associationMappings
+     *
      * @return mixed
      */
     public function formatMappingsWithRelations($mappings, $associationMappings)
@@ -21,11 +20,11 @@ class FieldFormatter
         $formattedMappings = $this->formatMappings($mappings);
 
         return $this->formatRelationMappings($formattedMappings, $associationMappings);
-
     }
 
     /**
      * @param $mappings
+     *
      * @return mixed
      */
     public function formatMappings($mappings)
@@ -42,6 +41,7 @@ class FieldFormatter
     /**
      * @param $mappings
      * @param $associationMappings
+     *
      * @return mixed
      */
     protected function formatRelationMappings($mappings, $associationMappings)
@@ -70,5 +70,4 @@ class FieldFormatter
             'boolean' => 'Type\\NumberType::class',
         );
     }
-
 }

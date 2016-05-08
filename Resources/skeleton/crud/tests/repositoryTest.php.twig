@@ -57,13 +57,13 @@ class {{ entity_class }}RepositoryTest extends WebTestCase
 {% for field, params in fields %}
 {% if 'id' == field %}
 {% elseif 'firstname' in field or 'lastname' in field or 'nickname' in field%}
-            ->set{{ field |capitalize }}($this->faker->name)
+            ->set{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}($this->faker->name)
 {% elseif 'text' == params['type'] %}
-            ->set{{ field |capitalize }}($this->faker->text(180))
+            ->set{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}($this->faker->text(180))
 {% elseif 'datetime' == params['type'] %}
-            ->set{{ field |capitalize }}($this->faker->datetime)
+            ->set{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}($this->faker->datetime)
 {% else %}
-            ->set{{ field |capitalize }}($this->faker->sentence(3))
+            ->set{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}($this->faker->sentence(3))
 {% endif %}
 {% endfor %}
         ;
@@ -85,7 +85,7 @@ class {{ entity_class }}RepositoryTest extends WebTestCase
         $this->assertTrue(${{ entity_singularized }} instanceof {{ entity }});
 
 {% for field, params in fields %}
-        $this->assertEquals(${{ entity_singularized }}->get{{ field |capitalize }}(), $fake{{ entity }}->get{{ field |capitalize }}());
+        $this->assertEquals(${{ entity_singularized }}->get{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}(), $fake{{ entity }}->get{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}());
 {% endfor %}
     }
 
@@ -100,7 +100,7 @@ class {{ entity_class }}RepositoryTest extends WebTestCase
         foreach (${{ entity_singularized }}s as $key => ${{ entity_singularized }}) {
             $this->assertTrue(${{ entity_singularized }} instanceof {{ entity }});
 {% for field, params in fields %}
-            $this->assertEquals(${{ entity_singularized }}->get{{ field |capitalize }}(), $fake{{ entity }}->get{{ field |capitalize }}());
+            $this->assertEquals(${{ entity_singularized }}->get{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}(), $fake{{ entity }}s[0]->get{{ field |replace({ '_': ' ' }) | title | replace({ ' ': '' }) }}());
 {% endfor %}
         }
     }
