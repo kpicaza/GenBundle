@@ -4,8 +4,11 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kpicaza/GenBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kpicaza/GenBundle/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/kpicaza/GenBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/kpicaza/GenBundle/build-status/master)
 
-This bundle provides new REST generator command for doctrine generator extending
+This bundle provides new generator command line tools for doctrine generator, extending
 [SensioGeneratorBundle](https://github.com/sensiolabs/SensioGeneratorBundle).
+
+* php bin/console gen:generate:rest
+* php bin/console gen:generate:repository-pattern
 
 ## Documentation:
 
